@@ -3,7 +3,7 @@ package com.wjr.spark.streaming
 import com.wjr.spark.env.ProjectEnv
 import com.wjr.spark.sink.ClickhouseSink
 import com.wjr.spark.streaming.SourceDataCountClassification.{outputStream, spark, testConsole}
-import com.wjr.spark.utils.JsonUtils
+import com.wjr.spark.utils.{JsonUtils, LazyLogging}
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{expr, struct, to_json}
 import org.json4s.DefaultFormats
@@ -19,7 +19,7 @@ import java.util.Properties
  * @create 2022-02-17 1:20
  * @Description: 正常数据结构化，异常数据发送后端展示
  */
-object DeciceHandleFormatStatistics {
+object DeciceHandleFormatStatistics extends LazyLogging{
     val spark = ProjectEnv.spark
     val sparkContext = ProjectEnv.sparkContext
 

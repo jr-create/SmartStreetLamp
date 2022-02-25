@@ -59,7 +59,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.27</version>
+            <version>8.0.25</version>
         </dependency>
         <!--hive-->
         <dependency>
@@ -157,6 +157,7 @@
         </dependency>
     </dependencies>
     <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
         <plugins>
             <!-- 该插件用于将 Scala 代码编译成 class 文件 -->
             <plugin>

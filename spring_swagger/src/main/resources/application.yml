@@ -28,8 +28,20 @@ spring:
   # 指定消息 key 和消息体的编解码方式
     producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
     producer.value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
-#配置了两个数据源
+#==============短信=======================
+  mail:
+    host: smtp.163.com
+    username: 15735372489@163.com
+    password: NHZOLNXAWNTKYGSA
+    default-encoding: UTF-8
+  # 超时时间（可选）
+    properties:
+      mail:
+        smtp:
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+#============配置了两个数据源==============
 master:
   datasource:
     url: jdbc:clickhouse://hadoop01:8123/default
@@ -40,26 +52,13 @@ master:
 #    username:
 #    password:
 #    driverClassName: org.apache.phoenix.jdbc.PhoenixDriver
-#cluster:
-#  datasource:
-#    url: jdbc:clickhouse://hadoop01:8123/default
-#    username: wjr
-#    password: v724FzVr
-#    driverClassName: ru.yandex.clickhouse.ClickHouseDriver
 cluster:
   datasource:
     url: jdbc:mysql://hadoop01:3306/lamp?useSSL=false&characterEncoding=utf8&allowMultiQueries=true
     username: root
     password: 123456
     driverClassName: com.mysql.jdbc.Driver
-
-  # 指定 kafka 代理地址，可以多个
-  kafka:
-    bootstrap-servers: hadoop01:9092,hadoop02:9092,hadoop03:9092
-  # 指定消息 key 和消息体的编解码方式
-  producer:
-    key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#============分页插件配置=================
 pagehelper:
   helperDialect: clickhouse
   auto-runtime-dialect: true

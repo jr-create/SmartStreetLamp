@@ -6,7 +6,7 @@ import com.wjr.spark.env.ProjectEnv
 import com.wjr.spark.sink.ClickhouseSink.propertiesMap
 import com.wjr.spark.sink.{ClickhouseSink, MyKafkaSink}
 import com.wjr.spark.utils.MyRedisUtil.getJedisClient
-import com.wjr.spark.utils.{ClickhouseJdbcUtil, FieldAndValue, JsonUtils, MyKafkaUtil, MyRedisUtil, PhoenixJdbcUtil, SqlUtils}
+import com.wjr.spark.utils.{ClickhouseJdbcUtil, FieldAndValue, JsonUtils, LazyLogging, MyKafkaUtil, MyRedisUtil, PhoenixJdbcUtil, SqlUtils}
 import org.apache.hadoop.conf.Configuration
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
@@ -31,7 +31,7 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
  * 原始数据分散
  * 设备数量统计
  */
-object SourceDataCountClassification {
+object SourceDataCountClassification extends LazyLogging{
     val spark = ProjectEnv.spark
     val sparkContext = ProjectEnv.sparkContext
 
