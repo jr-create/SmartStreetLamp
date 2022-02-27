@@ -1,5 +1,9 @@
 package com.wjr.spring_swagger.bean.inter;
 
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Lenovo-wjr
  * @Package: com.wjr.spring_swagger.bean
@@ -8,19 +12,8 @@ package com.wjr.spring_swagger.bean.inter;
  * @Description:
  */
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-/**
- * @description 设备数量
- * @author zhengkai.blog.csdn.net
- * @date 2022-02-12
- */
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-// @TableName("dwd_device_count")//实际指定数据库表
 public class DwdDeviceCount {
 
     /**
@@ -52,4 +45,59 @@ public class DwdDeviceCount {
      */
     private String createTime;
 
+    public String getNewDeviceCount() {
+        return newDeviceCount;
+    }
+
+    public void setNewDeviceCount(String newDeviceCount) {
+        this.newDeviceCount = newDeviceCount;
+    }
+
+    public String getNewTypeCount() {
+        return newTypeCount;
+    }
+
+    public void setNewTypeCount(String newTypeCount) {
+        this.newTypeCount = newTypeCount;
+    }
+
+    public String getDeviceTotal() {
+        return deviceTotal;
+    }
+
+    public void setDeviceTotal(String deviceTotal) {
+        this.deviceTotal = deviceTotal;
+    }
+
+    public String getNormalCount() {
+        return normalCount;
+    }
+
+    public void setNormalCount(String normalCount) {
+        this.normalCount = normalCount;
+    }
+
+    public String getAbnormalCount() {
+        return abnormalCount;
+    }
+
+    public void setAbnormalCount(String abnormalCount) {
+        this.abnormalCount = abnormalCount;
+    }
+
+    public String getTypeCount() {
+        return typeCount;
+    }
+
+    public void setTypeCount(String typeCount) {
+        this.typeCount = typeCount;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
 }

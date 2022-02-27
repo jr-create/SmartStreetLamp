@@ -62,8 +62,9 @@ public class DwsDeviceManagementController {
             }
             System.out.println("总共有:" + page.getTotal() + "条数据,实际返回:" + list.size() + "两条数据!");
         } catch (Exception e) {
-            log.error("查询" + this.getClass().getName() + "失败!原因是:", e);
+            System.out.println("查询" + this.getClass().getName() + "失败!原因是:"+e);
         }
+        System.out.println(list);
         return list;
     }
 

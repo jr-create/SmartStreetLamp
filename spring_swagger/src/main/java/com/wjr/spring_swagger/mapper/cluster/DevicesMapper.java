@@ -1,7 +1,9 @@
 package com.wjr.spring_swagger.mapper.cluster;
 
-import com.wjr.spring_swagger.mapper.base.BaseMapper;
+import com.wjr.spring_swagger.bean.BaseRoad;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author Lenovo-wjr
@@ -11,6 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @Description:
  */
 @Mapper
-public interface DevicesMapper  extends BaseMapper {
-
+public interface DevicesMapper   {
+    List<BaseRoad> getAllDevice();
 }

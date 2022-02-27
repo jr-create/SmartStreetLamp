@@ -2,19 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace= "com.wjr.spring_swagger.mapper.cluster.DevicesMapper">
+<mapper namespace="com.wjr.spring_swagger.mapper.cluster.DevicesMapper">
 
-    <select id="getAllDevice" resultType="com.wjr.spring_swagger.bean.StmDevices">
-        select * from devices
+    <select id="getAllDevice" resultType="com.wjr.spring_swagger.bean.BaseRoad">
+        select * from base_road
     </select>
-
-    <insert id="insertOrUpdateBatch" >
-        INSERT INTO devices
-        (name,var_name, update_time,current_value)
-        VALUES
-        <foreach collection ="devicesList" item="device" separator =",">
-            (#{device.name},#{device.varName}, #{device.updateTime}, #{device.currentValue})
-        </foreach >
-        ON DUPLICATE key update  current_value=values(current_value)
-    </insert>
 </mapper>
