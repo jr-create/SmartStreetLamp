@@ -19,7 +19,7 @@ import java.util.Properties
  * @create 2022-02-17 1:20
  * @Description: 正常数据结构化，异常数据发送后端展示
  */
-object DeciceHandleFormatStatistics extends LazyLogging{
+object DeciceHandleFormatStatistics extends LazyLogging {
     val spark = ProjectEnv.spark
     val sparkContext = ProjectEnv.sparkContext
 
@@ -34,7 +34,7 @@ object DeciceHandleFormatStatistics extends LazyLogging{
         val kafkaDF: DataFrame = spark.readStream
             .format("kafka")
             .option("kafka.bootstrap.servers", "hadoop01:9092")
-            .option("subscribe", "dwd_device_normal,dwd_device_error")
+            .option("subscribe", "dwd_device_normal")
             .option("failOnDataLoss", "false")
             .load()
             .selectExpr("topic", "cast(value as string) as v", "CAST(timestamp AS timestamp) as t")
@@ -50,17 +50,12 @@ object DeciceHandleFormatStatistics extends LazyLogging{
         //spark.sql(tuple._1) // TODO: 创建表
         //spark.sql(tuple._2).show
 
-        // TODO: 2、选择Kafka的schema（列属性）
-        val errorDeviceDF = kafkaDF.where('topic === "dwd_device_error") // TODO: 选择topic
 
         val normalDeviceDF = kafkaDF.where('topic === "dwd_device_normal") // TODO: 选择topic
 
         // TODO: 3、将从kafka读取的json数据结构化到hive中
         //正常设备信息保存到hive表中
         handleNormalStream(normalDeviceDF, ckDF, "dws_device_management", tuple)
-        // TODO: 4、将异常的设备信息发送给后端展示
-        //错误的信息发送给后端，以便交互使用
-        //handleErrorStream(errorDeviceDF,ckDF,  "dws_device_error_handle", tuple)
         // TODO: 5、开启等待
         spark.streams.awaitAnyTermination()
     }
@@ -79,10 +74,10 @@ object DeciceHandleFormatStatistics extends LazyLogging{
             .option("checkpointLocation", s"checkpoint/dir/JsonToDwdHive")
             .foreachBatch((ds: DataFrame, epochu_id: Long) => {
 
-                //ds.write.mode("append").format("hive")
-                //    .partitionBy("dt", "road_id")
-                //    .saveAsTable(s"lamp.$tbName")
-                ds.drop("test").join(ckDF, "road_id").show
+                ds.write.mode("append").format("hive")
+                    .partitionBy("dt", "road_id")
+                    .saveAsTable(s"lamp.$tbName")
+                //ds.drop("test").join(ckDF, "road_id").show
                 // TODO: 写入Clickhouse
                 ds.drop("test").join(ckDF, "road_id")
                     .write.mode("append")
@@ -109,6 +104,7 @@ object DeciceHandleFormatStatistics extends LazyLogging{
             .toDF("value")
             // TODO: 测试
             //.writeStream.format("console").outputMode("append").start()
+            // TODO: 写入Kafla
             .writeStream
             .format("kafka")
             .option("checkpointLocation", s"checkpoint/dir/JsonJoinCK")

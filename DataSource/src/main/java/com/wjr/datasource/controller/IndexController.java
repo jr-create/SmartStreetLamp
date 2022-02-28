@@ -23,7 +23,6 @@ public class IndexController {
     KafkaTemplate kafkaTemplate;//将kafka注入到Controller中
 
 
-
     @RequestMapping("/")
     public String index(@RequestBody String mqttLog) {
         JSONObject jsonObject = JSON.parseObject(mqttLog);

@@ -42,6 +42,21 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
+#==============Redis=======================
+  redis:
+    database: 0       # Redis数据库索引（默认为0）,如果设置为1，那么存入的key-value都存放在select 1中
+    #  127.0.0.1
+    host: 127.0.0.1
+    port: 6679
+    # h1iz6i2dp4redis
+    password: h1iz6i2dp4redis
+    jedis:
+      pool:
+        max-wait: 30000   # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-active: 100   # 连接池最大连接数（使用负值表示没有限制）
+        max-idle: 20      # 连接池中的最大空闲连接
+        min-idle: 0       # 连接池中的最小空闲连接
+    timeout: 5000     # 连接超时
 #============配置了两个数据源==============
 master:
   datasource:
@@ -68,8 +83,3 @@ pagehelper:
 #    active: dev
 
 #debug: true
-
-##配置mybatis规则
-#mybatis:
-#  config-location: classpath:mybatis/mybatis_config.xml #config配置文件路径
-#  mapper-locations: classpath:mybatis/mapper/*.xml #mapper配置文件路径

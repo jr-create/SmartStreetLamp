@@ -1,7 +1,7 @@
 package com.wjr.spring_swagger.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.wjr.spring_swagger.bean.inter.DwsValueAvg;
+import com.wjr.spring_swagger.bean.inter.DeviceValues;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer","handler","fieldHandler"})
 @AllArgsConstructor
 @NoArgsConstructor
-public class DwsRegionDeviceValue extends DwsValueAvg {
+public class DwsRegionDeviceValue extends DeviceValues {
 
     private String roadName;
     private String provinceName;

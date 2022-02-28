@@ -3,20 +3,12 @@ package com.wjr.spark.streaming
 import com.wjr.spark.bean.{DeviceCountInfo, DeviceInfo, LampCurrencyIndex}
 import com.wjr.spark.constant.RedisConstant
 import com.wjr.spark.env.ProjectEnv
-import com.wjr.spark.sink.ClickhouseSink.propertiesMap
 import com.wjr.spark.sink.{ClickhouseSink, MyKafkaSink}
-import com.wjr.spark.utils.MyRedisUtil.getJedisClient
-import com.wjr.spark.utils.{ClickhouseJdbcUtil, FieldAndValue, JsonUtils, LazyLogging, MyKafkaUtil, MyRedisUtil, PhoenixJdbcUtil, SqlUtils}
-import org.apache.hadoop.conf.Configuration
-import org.apache.kafka.clients.producer.KafkaProducer
-import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
+import com.wjr.spark.utils.{ClickhouseJdbcUtil, FieldAndValue, JsonUtils, LazyLogging, MyRedisUtil, PhoenixJdbcUtil, SqlUtils}
 import org.apache.spark.sql.{DataFrame, Dataset, ForeachWriter, Row, SaveMode}
 import org.apache.spark.sql.streaming.Trigger
-import org.json4s.{DefaultFormats, Extraction}
-import org.json4s.jackson.JsonMethods.{compact, render}
 import org.json4s.jackson.{JsonMethods, Serialization}
 import redis.clients.jedis.Jedis
-import ru.yandex.clickhouse.ClickhouseJdbcUrlParser
 
 import java.{lang, util}
 import java.lang.management.ManagementFactory
@@ -24,14 +16,13 @@ import java.sql.Connection
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 /**
  * 原始数据分散
  * 设备数量统计
  */
-object SourceDataCountClassification extends LazyLogging{
+object SourceDataCountClassification extends LazyLogging {
     val spark = ProjectEnv.spark
     val sparkContext = ProjectEnv.sparkContext
 
@@ -143,8 +134,18 @@ object SourceDataCountClassification extends LazyLogging{
                             if (deviceInfo.error_code == 1) { // TODO: 设备出现错误
                                 // TODO: 添加异常的设备
                                 jedisClient.sadd(dauDeviceExceptKey, deviceInfo.device_id)
-                                val errorDevices: util.Set[String] = jedisClient.smembers(dauDeviceExceptKey)
-                                MyKafkaSink.send("dwd_device_error", json)
+                                //val errorDevices: util.Set[String] = jedisClient.smembers(dauDeviceExceptKey)
+                                //MyKafkaSink.send("dwd_device_error", json)
+                                val jsonData = JsonUtils.jsonToList(json).filter(!_.toString.contains("test")).map(x => {
+                                    val value = x.toString.split(" ")
+                                    (value(0).split("\\.").last, value(1), value(2))
+                                })
+                                logger.info(s"[${this.getClass.getSimpleName}] 错误设备json解析：$jsonData")
+                                // TODO: 将错误设备信息保存到CK中，建表，插入
+                                ClickhouseJdbcUtil.executeSql(clickHouseConnection,
+                                    SqlUtils.createCKTable("dwd_error_device", jsonData.map(x => (x._1, x._2)).toMap, "MergeTree", "road_id", "toYYYYMMDD(toDate(timestamp))", "device_id")
+                                        + " TTL toDate(timestamp) + INTERVAL 1 MINUTE")
+                                ClickhouseJdbcUtil.executeSql(clickHouseConnection, SqlUtils.insertSql("dwd_error_device", jsonData.map(_._3).toBuffer))
                             } else {
                                 // TODO: 删除异常池中的设备Id
                                 jedisClient.srem(dauDeviceExceptKey, deviceInfo.device_id)
@@ -167,8 +168,6 @@ object SourceDataCountClassification extends LazyLogging{
                                 jedisClient.expire(dauTypeKey, 3600 * 24)
                             }
                             println("环境传感器指标：" + deviceInfo.values)
-                            //val lampCurrencyIndex = LampCurrencyIndex(deviceInfo.device_id, deviceInfo.type_id, deviceInfo.error_code, deviceInfo.road_id, deviceInfo.longitude, deviceInfo.latitude)
-                            //println(s"通用指标：$lampCurrencyIndex")
                             // TODO: 通过差集获取总的设备数（排除两个队列中都有的设备）
                             val allDevice: util.Set[String] = jedisClient.sdiff(dauDeviceNormalKey, dauDeviceExceptKey)
                             val normalCount = jedisClient.scard(dauDeviceNormalKey)
@@ -182,11 +181,11 @@ object SourceDataCountClassification extends LazyLogging{
                                 //PhoenixJdbcUtil.executeSql(phoenixConnection,SqlUtils.insertPhoenixData("dwd_device_count",
                                 //    JsonUtils.getObjectValue(deviceCountInfo)))
                                 // TODO: 设备数量统计表保存到CK中
-                                println("设备数量统计" + deviceCountInfo)
+                                logger.info("设备数量统计:" + deviceCountInfo)
                                 ClickhouseJdbcUtil.executeSql(clickHouseConnection, SqlUtils.insertSql("dwd_device_count",
                                     JsonUtils.getObjectValue(deviceCountInfo).toBuffer))
 
-                                MyKafkaSink.send("dwd_device_count",JsonUtils.ObjectToJson(deviceCountInfo))
+                                MyKafkaSink.send("dwd_device_count", JsonUtils.ObjectToJson(deviceCountInfo))
                             } catch {
                                 case e => e.printStackTrace()
                             }
@@ -207,7 +206,5 @@ object SourceDataCountClassification extends LazyLogging{
             .start()
 
     }
-
-
 
 }

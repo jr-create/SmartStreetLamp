@@ -131,7 +131,7 @@ object SqlUtils {
                       primaryKey: String = null
                      ): String = {
         s"""
-           |create table $tbName (
+           |create table if not exists $tbName (
            |${option.map(x => s"${x._1} ${x._2}").mkString(",")}
            |)engine =$engine
            |partition by ($partitionBy)

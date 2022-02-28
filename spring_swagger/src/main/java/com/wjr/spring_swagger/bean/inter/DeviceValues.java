@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public class DwsValueAvg {
+public class DeviceValues {
 
 
     /**
