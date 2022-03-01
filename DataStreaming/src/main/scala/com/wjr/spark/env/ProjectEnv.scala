@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap
 case class Record(key: Int, value: String)
 
 object ProjectEnv {
-    val appName = "Spark"
-    val spark: SparkSession = SparkSession.builder
+    final val appName = "Spark"
+    private[spark] final val spark: SparkSession = SparkSession.builder
         .config("spark.sql.parquet.writeLegacyFormat", true)
         // TODO: 序列化保证
         .master("local[*]").appName(this.appName)
