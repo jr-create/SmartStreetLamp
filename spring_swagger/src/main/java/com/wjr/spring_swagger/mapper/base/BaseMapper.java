@@ -10,14 +10,9 @@ package com.wjr.spring_swagger.mapper.base;
 
 import java.util.List;
 
-public interface BaseMapper<T> {
+public interface BaseMapper<T>  {
 
-    /**
-     * 单条新增插入数据
-     */
-    void insert(T entity) throws Exception;
-
-
+    void insert(T entity);
     /**
      * 批量新增据插入数据
      */
@@ -44,6 +39,7 @@ public interface BaseMapper<T> {
      */
     T findByPrimaryKey(int id);
 
+
     /**
      * 根据对象查询单个记录
      */
@@ -60,13 +56,11 @@ public interface BaseMapper<T> {
     List<T> findAll();
 
     /**
-     * 根据对象查询信息
+     * 根据名称查询对象
      */
-    Object findByObject(Object obj);
+    T findProvinceByName(String name);
 
-    List getAllDevice();
-
-    void insertOrUpdateBatch(List devicesList);
+    void insertOrUpdateBatch(List<T> entityList);
 
 
 }

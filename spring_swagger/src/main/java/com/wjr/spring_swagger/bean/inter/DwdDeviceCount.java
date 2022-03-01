@@ -2,6 +2,7 @@ package com.wjr.spring_swagger.bean.inter;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
  * @create 2022-02-12 0:53
  * @Description:
  */
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class DwdDeviceCount {
@@ -45,59 +46,4 @@ public class DwdDeviceCount {
      */
     private String createTime;
 
-    public String getNewDeviceCount() {
-        return newDeviceCount;
-    }
-
-    public void setNewDeviceCount(String newDeviceCount) {
-        this.newDeviceCount = newDeviceCount;
-    }
-
-    public String getNewTypeCount() {
-        return newTypeCount;
-    }
-
-    public void setNewTypeCount(String newTypeCount) {
-        this.newTypeCount = newTypeCount;
-    }
-
-    public String getDeviceTotal() {
-        return deviceTotal;
-    }
-
-    public void setDeviceTotal(String deviceTotal) {
-        this.deviceTotal = deviceTotal;
-    }
-
-    public String getNormalCount() {
-        return normalCount;
-    }
-
-    public void setNormalCount(String normalCount) {
-        this.normalCount = normalCount;
-    }
-
-    public String getAbnormalCount() {
-        return abnormalCount;
-    }
-
-    public void setAbnormalCount(String abnormalCount) {
-        this.abnormalCount = abnormalCount;
-    }
-
-    public String getTypeCount() {
-        return typeCount;
-    }
-
-    public void setTypeCount(String typeCount) {
-        this.typeCount = typeCount;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
 }

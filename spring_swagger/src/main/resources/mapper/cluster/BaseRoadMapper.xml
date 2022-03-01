@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjr.spring_swagger.mapper.cluster.BaseRoadMapper">
+
+    <insert id="insert">
+        insert into base_road (name, city_name, province_id)
+        values (#{name}, #{cityName}, #{provinceId})
+    </insert>
+
+    <select id="findAll" resultType="com.wjr.spring_swagger.bean.dim.BaseRoad">
+        select *
+        from base_road
+    </select>
+
+    <select id="findBaseRoadByAttribute" resultType="com.wjr.spring_swagger.bean.dim.BaseRoad">
+        select * from base_road
+        where name =#{name} and city_name=#{cityName} and province_id = #{provinceId}
+    </select>
+</mapper>

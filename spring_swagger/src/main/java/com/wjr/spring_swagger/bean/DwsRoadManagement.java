@@ -13,12 +13,11 @@ import lombok.NoArgsConstructor;
  * @create 2022-02-15 23:43
  * @Description:
  */
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer","handler","fieldHandler"})
+@Data
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class DwsRoadManagement extends DwdDeviceCount {
-
-
     /**
      * road_id
      */
@@ -59,67 +58,4 @@ public class DwsRoadManagement extends DwdDeviceCount {
      */
     private String regionName;
 
-    public Integer getRoadId() {
-        return roadId;
-    }
-
-    public void setRoadId(Integer roadId) {
-        this.roadId = roadId;
-    }
-
-    public String getRoadName() {
-        return roadName;
-    }
-
-    public void setRoadName(String roadName) {
-        this.roadName = roadName;
-    }
-
-    public String getManager() {
-        return manager;
-    }
-
-    public void setManager(String manager) {
-        this.manager = manager;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public String getProvinceName() {
-        return provinceName;
-    }
-
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
-    }
-
-    public String getAreaCode() {
-        return areaCode;
-    }
-
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
-    }
-
-    public String getIsoCode() {
-        return isoCode;
-    }
-
-    public void setIsoCode(String isoCode) {
-        this.isoCode = isoCode;
-    }
-
-    public String getRegionName() {
-        return regionName;
-    }
-
-    public void setRegionName(String regionName) {
-        this.regionName = regionName;
-    }
 }

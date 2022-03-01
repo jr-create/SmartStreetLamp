@@ -2,7 +2,7 @@
 *.log
 *.iml
 
-target/
+*.target/
 out/
 lib_managed/
 src_managed/

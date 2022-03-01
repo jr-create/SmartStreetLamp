@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * @create 2022-02-04 16:08
  * @Description:
  */
-public class FieldAndValue {
+public abstract class FieldAndValue {
     protected static String[] getFiledName(Object o) {
         Field[] fields = o.getClass().getDeclaredFields();
         String[] fieldNames = new String[fields.length];

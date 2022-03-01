@@ -4,7 +4,7 @@ import com.wjr.spark.bean.{DeviceCountInfo, DeviceInfo, LampCurrencyIndex}
 import com.wjr.spark.constant.RedisConstant
 import com.wjr.spark.env.ProjectEnv
 import com.wjr.spark.sink.{ClickhouseSink, MyKafkaSink}
-import com.wjr.spark.utils.{ClickhouseJdbcUtil, FieldAndValue, JsonUtils, LazyLogging, MyRedisUtil, PhoenixJdbcUtil, SqlUtils}
+import com.wjr.spark.utils.{ClickhouseJdbcUtil, JsonUtils, LazyLogging, MyRedisUtil, PhoenixJdbcUtil, SqlUtils}
 import org.apache.spark.sql.{DataFrame, Dataset, ForeachWriter, Row, SaveMode}
 import org.apache.spark.sql.streaming.Trigger
 import org.json4s.jackson.{JsonMethods, Serialization}

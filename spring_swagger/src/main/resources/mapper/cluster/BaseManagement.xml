@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjr.spring_swagger.mapper.cluster.BaseManagementMapper">
+
+    <insert id="insert">
+        insert into base_management (name, road_name, start_time, end_time)
+        values (#{name}, #{roadName}, #{startTime}, #{endTime})
+    </insert>
+</mapper>
