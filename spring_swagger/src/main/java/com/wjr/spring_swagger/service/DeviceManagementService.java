@@ -9,6 +9,6 @@ import com.wjr.spring_swagger.mapper.master.DeviceManagementMapper;
  * @create 2022-02-21 22:17
  * @Description:
  */
-public interface DwsService extends DeviceManagementMapper {
+public interface DeviceManagementService extends DeviceManagementMapper {
 
 }

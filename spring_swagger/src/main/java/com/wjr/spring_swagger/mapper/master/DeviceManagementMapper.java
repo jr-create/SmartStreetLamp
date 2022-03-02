@@ -22,4 +22,5 @@ public interface DeviceManagementMapper {
     List<DwsRegionDeviceValue> getRoadDeviceValueAvgByName(String road_name);
     List<DwsRegionDeviceValue> getCityDeviceValueAvgByName(String city_name);
     List<DwsRegionDeviceValue> getProvinceDeviceValueAvgByName(String province_name);
+    List<AdsRegionTypeCount> getRegionTypeCount();
 }

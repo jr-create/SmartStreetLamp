@@ -56,9 +56,13 @@
         where road_name = #{road_name}
         order by road_id
     </select>
-    <select id="getProvinceDeviceByName" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
+    <select id="getProvinceDeviceByNae" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
         select * from dws_device_management
         where province_name = #{province_name}
         order by road_id
+    </select>
+    <select id="getRegionTypeCount" resultType="com.wjr.spring_swagger.bean.AdsRegionTypeCount">
+        select province_name,type_id,count(1) as type_count from dws_device_management
+        group by province_name
     </select>
 </mapper>

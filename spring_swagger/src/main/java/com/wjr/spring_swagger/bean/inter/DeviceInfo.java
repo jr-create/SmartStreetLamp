@@ -2,11 +2,13 @@ package com.wjr.spring_swagger.bean.inter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class DeviceInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -92,5 +94,4 @@ public class DeviceInfo implements Serializable {
      */
     private Integer errorCode;
 
-    public DeviceInfo() {}
 }

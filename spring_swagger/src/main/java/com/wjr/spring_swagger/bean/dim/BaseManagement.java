@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.Date;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BaseManagement implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,9 +52,8 @@ public class BaseManagement implements Serializable {
     /**
      * end_time
      */
-    @ApiModelProperty(example = "2018-10-01 12:18:48")
+    @ApiModelProperty(example = "2022-03-01 12:18:48")
     @JsonFormat(pattern = DATE_FORMAT)
     private Date endTime;
 
-    public BaseManagement() {}
 }

@@ -1,9 +1,10 @@
 package com.wjr.spring_swagger.service.impl;
 
+import com.wjr.spring_swagger.bean.AdsRegionTypeCount;
 import com.wjr.spring_swagger.bean.DwsDeviceManagement;
 import com.wjr.spring_swagger.bean.DwsRegionDeviceValue;
 import com.wjr.spring_swagger.mapper.master.DeviceManagementMapper;
-import com.wjr.spring_swagger.service.DwsService;
+import com.wjr.spring_swagger.service.DeviceManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * @Description:
  */
 @Service
-public class DwsServiceImpl implements DwsService {
+public class DwsServiceImpl implements DeviceManagementService {
 
     @Autowired
     private  DeviceManagementMapper deviceManagementMapper;
@@ -55,5 +56,10 @@ public class DwsServiceImpl implements DwsService {
     @Override
     public List<DwsRegionDeviceValue> getProvinceDeviceValueAvgByName(String province_name) {
         return deviceManagementMapper.getProvinceDeviceValueAvgByName(province_name);
+    }
+
+    @Override
+    public List<AdsRegionTypeCount> getRegionTypeCount() {
+        return deviceManagementMapper.getRegionTypeCount();
     }
 }
