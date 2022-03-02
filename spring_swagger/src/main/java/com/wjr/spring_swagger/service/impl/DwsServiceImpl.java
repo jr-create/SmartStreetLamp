@@ -24,8 +24,8 @@ public class DwsServiceImpl implements DeviceManagementService {
     private  DeviceManagementMapper deviceManagementMapper;
 
     @Override
-    public List<DwsDeviceManagement> getAllDevice() {
-        return deviceManagementMapper.getAllDevice();
+    public List<DwsDeviceManagement> getDeviceManagements() {
+        return deviceManagementMapper.getDeviceManagements();
     }
 
     @Override

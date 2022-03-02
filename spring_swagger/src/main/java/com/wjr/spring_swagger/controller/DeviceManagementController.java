@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @RequestMapping("/dws")
-@Api(tags = "DwsDeviceManagement接口")// TODO: 2022/1/29 标签组
+@Api(tags = "DwsDeviceManagement接口")
 public class DeviceManagementController {
 
     @Autowired
@@ -59,19 +59,20 @@ public class DeviceManagementController {
         List list = null;
         try {
             Page<?> page = PageHelper.startPage(pageNum, dataNum);
-            System.out.println("设置第" + pageNum + "页两条数据!");
+            log.info("设置第" + pageNum + "页两条数据!");
             if (road_name != null && !road_name.equals("null")) {
                 list = dwsService.getRoadDeviceByName(road_name);
             } else if (city_name != null && !city_name.equals("null")) {
                 list = dwsService.getCityDeviceByName(city_name);
             } else if (province_name != null && !province_name.equals("null")) {
                 list = dwsService.getProvinceDeviceByName(province_name);
+            }else{
+                list = dwsService.getDeviceManagements();
             }
-            System.out.println("总共有:" + page.getTotal() + "条数据,实际返回:" + list.size() + "两条数据!");
+            log.info("总共有:" + page.getTotal() + "条数据,实际返回:" + list.size() + "两条数据!");
         } catch (Exception e) {
-            System.out.println("查询" + this.getClass().getName() + "失败!原因是:" + e);
+            log.info("查询" + this.getClass().getName() + "失败!原因是:" + e);
         }
-        System.out.println(list);
         return list;
     }
 
@@ -111,7 +112,7 @@ public class DeviceManagementController {
                 adsRegionTypeCount.setTypeName(baseDeviceType.getTypeName());
             }
         } catch (Exception e) {
-            new Exception(e.getMessage());
+            e.printStackTrace();
         }
         return regionTypeCount;
     }
