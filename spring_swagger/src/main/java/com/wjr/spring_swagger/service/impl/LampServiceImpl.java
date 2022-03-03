@@ -1,8 +1,10 @@
 package com.wjr.spring_swagger.service.impl;
 
+import com.wjr.spring_swagger.bean.dim.BaseDeviceType;
 import com.wjr.spring_swagger.bean.dim.BaseManagement;
 import com.wjr.spring_swagger.bean.dim.BaseProvince;
 import com.wjr.spring_swagger.bean.dim.BaseRoad;
+import com.wjr.spring_swagger.mapper.cluster.BaseDeviceTypeMapper;
 import com.wjr.spring_swagger.mapper.cluster.BaseManagementMapper;
 import com.wjr.spring_swagger.mapper.cluster.BaseProvinceMapper;
 import com.wjr.spring_swagger.mapper.cluster.BaseRoadMapper;
@@ -29,6 +31,9 @@ public class LampServiceImpl {
     @Autowired
     BaseManagementMapper baseManagementMapper;
 
+    @Autowired
+    BaseDeviceTypeMapper baseDeviceTypeMapper;
+
     public List<BaseRoad> getAllDevice() {
         return baseRoadMapper.findAll();
     }
@@ -48,4 +53,9 @@ public class LampServiceImpl {
     public BaseRoad findBaseRoadByAttribute(String name, String cityName, Integer provinceId){
         return baseRoadMapper.findBaseRoadByAttribute(name,cityName,provinceId);
     }
+
+    public List<BaseDeviceType> findAllBaseDeviceType(){
+        return baseDeviceTypeMapper.findAll();
+    }
+
 }

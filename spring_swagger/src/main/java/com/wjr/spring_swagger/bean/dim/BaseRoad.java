@@ -1,5 +1,6 @@
 package com.wjr.spring_swagger.bean.dim;
 
+<<<<<<< HEAD
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -28,4 +29,7 @@ public class BaseRoad  {
     private String name;
     private String cityName;
     private Integer provinceId;
+=======
+public class BaseRoad {
+>>>>>>> origin/master
 }

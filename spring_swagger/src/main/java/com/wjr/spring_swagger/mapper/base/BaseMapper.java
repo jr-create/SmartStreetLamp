@@ -16,22 +16,22 @@ public interface BaseMapper<T>  {
     /**
      * 批量新增据插入数据
      */
-    int insertBatch(List<T> entityList) throws Exception;
+    int insertBatch(List<T> entityList) ;
 
     /**
      * 更新数据
      */
-    void update(T entity) throws Exception;
+    void update(T entity) ;
 
     /**
      * 根据ID删除数据
      */
-    void deleteByPrimaryKey(int id) throws Exception;
+    void deleteByPrimaryKey(int id) ;
 
     /**
      * 删除数据
      */
-    void delete(T entity) throws Exception;
+    void delete(T entity) ;
 
 
     /**

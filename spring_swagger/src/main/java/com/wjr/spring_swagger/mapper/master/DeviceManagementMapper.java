@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Mapper
 public interface DeviceManagementMapper {
-    List<DwsDeviceManagement> getAllDevice();
+    List<DwsDeviceManagement> getDeviceManagements();
     List<DwsDeviceManagement> getRoadDeviceByName(String road_name);
     List<DwsDeviceManagement> getCityDeviceByName(String city_name);
     List<DwsDeviceManagement> getProvinceDeviceByName(String province_name);
@@ -22,4 +22,5 @@ public interface DeviceManagementMapper {
     List<DwsRegionDeviceValue> getRoadDeviceValueAvgByName(String road_name);
     List<DwsRegionDeviceValue> getCityDeviceValueAvgByName(String city_name);
     List<DwsRegionDeviceValue> getProvinceDeviceValueAvgByName(String province_name);
+    List<AdsRegionTypeCount> getRegionTypeCount();
 }
