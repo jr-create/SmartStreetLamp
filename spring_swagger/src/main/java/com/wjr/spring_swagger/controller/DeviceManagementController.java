@@ -1,25 +1,24 @@
 package com.wjr.spring_swagger.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.wjr.spring_swagger.bean.AdsRegionTypeCount;
 import com.wjr.spring_swagger.bean.dim.BaseDeviceType;
 import com.wjr.spring_swagger.service.impl.DwsServiceImpl;
 import com.wjr.spring_swagger.service.impl.LampServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 /**
  * @author Lenovo-wjr
@@ -66,7 +65,7 @@ public class DeviceManagementController {
                 list = dwsService.getCityDeviceByName(city_name);
             } else if (province_name != null && !province_name.equals("null")) {
                 list = dwsService.getProvinceDeviceByName(province_name);
-            }else{
+            } else {
                 list = dwsService.getDeviceManagements();
             }
             log.info("总共有:" + page.getTotal() + "条数据,实际返回:" + list.size() + "两条数据!");
@@ -102,18 +101,35 @@ public class DeviceManagementController {
 
     @PostMapping("/getRegionTypeCount")
     @ApiOperation(value = "查询", notes = "获取各地区设备类型的数量")
-    public List getRegionTypeCount() {
-        List<AdsRegionTypeCount> regionTypeCount = dwsService.getRegionTypeCount();
+    public List getRegionTypeCount(@ApiParam("province_name") @RequestParam String province_name) {
+        // 获取地区设备类型数量
+        List<AdsRegionTypeCount> regionTypeCount = dwsService.getRegionTypeCount(province_name);
+        // 获取类型Id 对应的 类型名称
         List<BaseDeviceType> allBaseDeviceType = lampService.findAllBaseDeviceType();
         try {
             for (AdsRegionTypeCount adsRegionTypeCount : regionTypeCount) {
                 String typeId = adsRegionTypeCount.getTypeId();
-                BaseDeviceType baseDeviceType = allBaseDeviceType.stream().filter(x -> x.getId().equals(typeId)).findFirst().get();
-                adsRegionTypeCount.setTypeName(baseDeviceType.getTypeName());
+                // 将类型Id对应 类型名称
+                Optional<BaseDeviceType> optionalBaseDeviceType = allBaseDeviceType.stream().filter(x -> x.getId() == Integer.parseInt(typeId)).findFirst();
+                if (optionalBaseDeviceType.isPresent()) {
+                    BaseDeviceType baseDeviceType = optionalBaseDeviceType.get();
+                    adsRegionTypeCount.setTypeName(baseDeviceType.getName());
+                } else {
+                    adsRegionTypeCount.setTypeName(adsRegionTypeCount.getTypeId() + ":未定义");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return regionTypeCount;
+    }
+
+
+    @PostMapping("/getNationDeviceCount")
+    public String getNationDeviceCount(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name","中国");
+        jsonObject.put("count",dwsService.getNationDeviceCount());
+        return jsonObject.toString();
     }
 }

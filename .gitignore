@@ -10,7 +10,7 @@ project/boot/
 project/plugins/project/
 
 node_modules/
-
+*/test/
 .idea/
 logs/
 checkpoint/

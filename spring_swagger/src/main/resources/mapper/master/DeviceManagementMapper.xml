@@ -4,18 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wjr.spring_swagger.mapper.master.DeviceManagementMapper">
 
-
     <!--  提取重复sql  -->
     <sql id="header">
         select  province_name, city_name,road_name,
-               avg(voltage) as avg_voltage,
-               avg(temperature) as avg_temperature,
-               avg(humidity) as avg_humidity,
-               avg(lighting) as avg_lighting,
-               avg(PM2_5) as avg_PM2_5,
-               avg(CO_2) as avg_CO_2,
+               avg(voltage) as voltage,
+               avg(temperature) as temperature,
+               avg(humidity) as humidity,
+               avg(lighting) as lighting,
+               avg(PM2_5) as PM2_5,
+               avg(CO_2) as CO_2,
                dt
-        from dws_device_management
+        from dws_normal_device_management_view
     </sql>
 
     <sql id="order">
@@ -34,35 +33,45 @@
         where city_name = #{city_name}
         <include refid="order"/>
     </select>
+
     <select id="getProvinceDeviceValueAvgByName" resultType="com.wjr.spring_swagger.bean.DwsRegionDeviceValue">
         <include refid="header"/>
         where province_name = #{province_name}
         <include refid="order"/>
     </select>
 
-
-    <select id="getAllDevice" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
-        select * from dws_device_management
+    <select id="getDeviceManagements" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
+        select * from dws_normal_device_management_view
     </select>
 
-
     <select id="getCityDeviceByName" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
-        select * from dws_device_management
+        select * from dws_normal_device_management_view
         where city_name = #{city_name}
         order by road_id
     </select>
+
     <select id="getRoadDeviceByName" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
-        select * from dws_device_management
+        select * from dws_normal_device_management_view
         where road_name = #{road_name}
         order by road_id
     </select>
-    <select id="getProvinceDeviceByNae" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
-        select * from dws_device_management
+
+    <select id="getProvinceDeviceByName" resultType="com.wjr.spring_swagger.bean.DwsDeviceManagement">
+        select * from dws_normal_device_management_view
         where province_name = #{province_name}
         order by road_id
     </select>
+
     <select id="getRegionTypeCount" resultType="com.wjr.spring_swagger.bean.AdsRegionTypeCount">
-        select province_name,type_id,count(1) as type_count from dws_device_management
-        group by province_name
+        select province_name,type_id,count(1) as type_count from dws_normal_device_management_view
+        group by province_name ,type_id
+        having province_name = #{province_name}
     </select>
+
+    <select id="getNationDeviceCount" resultType="java.lang.Long">
+        select sum(1) from  (select 1 from dws_normal_device_management_view  group by device_id　);
+
+    </select>
+
+
 </mapper>

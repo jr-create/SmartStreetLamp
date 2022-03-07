@@ -1,22 +1,22 @@
 package com.wjr.spark.streaming
 
-import com.wjr.spark.bean.{DeviceCountInfo, DeviceInfo, LampCurrencyIndex}
+import com.wjr.spark.bean.{DeviceCountInfo, DeviceInfo}
 import com.wjr.spark.constant.RedisConstant
 import com.wjr.spark.env.ProjectEnv
-import com.wjr.spark.sink.{ClickhouseSink, MyKafkaSink}
-import com.wjr.spark.utils.{ClickhouseJdbcUtil, JsonUtils, LazyLogging, MyRedisUtil, PhoenixJdbcUtil, SqlUtils}
-import org.apache.spark.sql.{DataFrame, Dataset, ForeachWriter, Row, SaveMode}
+import com.wjr.spark.sink.MyKafkaSink
+import com.wjr.spark.utils._
 import org.apache.spark.sql.streaming.Trigger
-import org.json4s.jackson.{JsonMethods, Serialization}
+import org.apache.spark.sql.{DataFrame, ForeachWriter, Row}
+import org.json4s.jackson.JsonMethods
 import redis.clients.jedis.Jedis
 
-import java.{lang, util}
 import java.lang.management.ManagementFactory
 import java.sql.Connection
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import java.{lang, util}
+import scala.collection.mutable.ListBuffer
 
 /**
  * 原始数据分散
@@ -74,7 +74,6 @@ object SourceDataCountClassification extends LazyLogging {
     }
 
     def outputStream(dataFrame: DataFrame): Unit = {
-        var fields = JsonUtils.ObjectToCastStr[DeviceInfo]
         // TODO: 解析Kafka中json数据
         val kafkaJson: DataFrame = dataFrame.selectExpr("v", "t")
         // TODO: 4、写入hive, 对应hive表的分区（dt,road_id）；lines
@@ -135,17 +134,7 @@ object SourceDataCountClassification extends LazyLogging {
                                 // TODO: 添加异常的设备
                                 jedisClient.sadd(dauDeviceExceptKey, deviceInfo.device_id)
                                 //val errorDevices: util.Set[String] = jedisClient.smembers(dauDeviceExceptKey)
-                                //MyKafkaSink.send("dwd_device_error", json)
-                                val jsonData = JsonUtils.jsonToList(json).filter(!_.toString.contains("test")).map(x => {
-                                    val value = x.toString.split(" ")
-                                    (value(0).split("\\.").last, value(1), value(2))
-                                })
-                                logger.info(s"[${this.getClass.getSimpleName}] 错误设备json解析：$jsonData")
-                                // TODO: 将错误设备信息保存到CK中，建表，插入
-                                ClickhouseJdbcUtil.executeSql(clickHouseConnection,
-                                    SqlUtils.createCKTable("dwd_error_device", jsonData.map(x => (x._1, x._2)).toMap, "MergeTree", "road_id", "toYYYYMMDD(toDate(timestamp))", "device_id")
-                                        + " TTL toDate(timestamp) + INTERVAL 1 MINUTE")
-                                ClickhouseJdbcUtil.executeSql(clickHouseConnection, SqlUtils.insertSql("dwd_error_device", jsonData.map(_._3).toBuffer))
+                                MyKafkaSink.send("dwd_error_device", json)
                             } else {
                                 // TODO: 删除异常池中的设备Id
                                 jedisClient.srem(dauDeviceExceptKey, deviceInfo.device_id)
@@ -154,7 +143,7 @@ object SourceDataCountClassification extends LazyLogging {
                                 if (deviceIsExist == 1) {
                                     newDevice.append(deviceInfo)
                                 }
-                                MyKafkaSink.send("dwd_device_normal", json)
+                                MyKafkaSink.send("dwd_normal_device", json)
                             }
                             // TODO: 设备类型数
                             val typeIsExist: lang.Long = jedisClient.sadd(dauTypeKey, deviceInfo.type_id.toString)
@@ -189,7 +178,6 @@ object SourceDataCountClassification extends LazyLogging {
                             } catch {
                                 case e => e.printStackTrace()
                             }
-                            //}
                         }
                     }
 

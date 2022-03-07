@@ -1,17 +1,12 @@
 package com.wjr.spark.env
 
-import com.wjr.spark.streaming.DeciceHandleFormatStatistics.spark
-import com.wjr.spark.streaming.SourceDataCountClassification.spark
 import com.wjr.spark.udf.RegisterUdf
 import org.apache.log4j.spi.LoggerFactory
-import org.apache.spark.sql.{Row, SaveMode, SparkSession}
+import org.apache.spark.SparkContext
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.streaming.StreamingQueryListener
 import org.apache.spark.sql.streaming.StreamingQueryListener.{QueryProgressEvent, QueryStartedEvent, QueryTerminatedEvent}
-import org.apache.spark.{SparkConf, SparkContext}
-import org.json4s.DefaultFormats
-import org.json4s.jackson.JsonMethods
 
-import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 

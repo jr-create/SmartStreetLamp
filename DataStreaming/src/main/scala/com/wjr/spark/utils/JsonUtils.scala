@@ -28,9 +28,8 @@ object JsonUtils {
     System.setProperty("HADOOP_USER_NAME", "root")
 
     def getFields[T: TypeTag] = typeOf[T].members.collect {
-        case m: MethodSymbol if m.isCaseAccessor => {
+        case m: MethodSymbol if m.isCaseAccessor =>
             m.toString.split(" ")(1)
-        }
     }.toArray
 
     def getObjectValue(data: Any): Array[AnyRef] = {
@@ -90,6 +89,7 @@ object JsonUtils {
     /**
      * 万能json解析成List((名称 类型 值),(名称 类型 值))
      * 嵌套的名称则为  一级名称.二级名称
+     *
      * @param json
      * @return
      */
@@ -206,34 +206,37 @@ object JsonUtils {
         //println(json)
         for (i <- 0 until 100) {
             val random = new Random().nextInt(11 + 1) // TODO: 生成n+1的随机生成数
+            val typeNum = new Random().nextInt(7 + 1) // TODO: 生成n+1的随机生成数
             val number = new Random().nextInt(9) + 1 // TODO: 生成n+1的随机生成数
             val device_id = new Random().nextInt(1000 + 1) // TODO: 生成n+1的随机生成数
             val error_code = 0 // TODO: 生成n+1的随机生成数
-            val vol = Math.random()*(5-1)+1 // TODO: 生成n+1的随机生成数
+            val vol = Math.round((Random.nextGaussian()+4)*100)/100 // TODO: 生成n+1的随机生成数
             json =
                 s"""
-                   |{"reason":"success","device_id":"my_00$device_id","type_id":${random},"timestamp":${System.currentTimeMillis() / 1000},"error_code":$error_code,"road_id":${random},"longitude":"11${number}.${number}820083778303","latitude":"3${number}.${number}242552469552","values":{"voltage":"$vol","temperature":"${vol * 2.5}","humidity":"${vol * 25}","lighting":"${vol * 25}","PM2_5":"${vol * 25}","CO_2":"${vol * 25}","info":"yin阴","direct":"xibeifeng西北风","power":"${number}级"},"test":["a1",2]}
+                   |{"reason":"success","device_id":"my_00$device_id","type_id":${typeNum},"timestamp":${System.currentTimeMillis() / 1000},"error_code":$error_code,"road_id":${random},"longitude":"11${number}.${number}820083778303","latitude":"3${number}.${number}242552469552","values":{"voltage":"$vol","temperature":"${vol * 2.5}","humidity":"${vol * 25}","lighting":"${vol * 25}","PM2_5":"${vol * 25}","CO_2":"${vol * 25}","info":"yin阴","direct":"xibeifeng西北风","power":"${number}级"},"test":["a1",2]}
                    |""".stripMargin
-            if (error_code == 1) {
-                //MyKafkaSink.send("dwd_device_error", json)
-            }
-            else{
-                MyKafkaSink.send("dwd_device_normal", json)
-            }
+            //if (error_code == 1) {
+            //    MyKafkaSink.send("dwd_device_error", json)
+            //}
+            //else {
+            //    MyKafkaSink.send("dwd_device_normal", json)
+            //}
+            println(error_code)
+            MyKafkaSink.send("ods_lamp_log", json)
         }
 
-        import org.json4s._
-        implicit val formats = DefaultFormats
-
-        val jValue = JsonMethods.parse(json)
-        val jsonList = jsonToList(json)
-
-        println("List::" + jsonList)
-        // TODO: json转换的List拼接createSQL
-        val tuple = jsonListToHSql("dwd", "lamp", "dwd_device_index", jsonList)
-        println("建表语句"+tuple._1)
-        println("插入语句"+tuple._2)
-        println("json转cast"+tuple._3)
+        //import org.json4s._
+        //implicit val formats = DefaultFormats
+        //
+        //val jValue = JsonMethods.parse(json)
+        //val jsonList = jsonToList(json)
+        //
+        //println("List::" + jsonList)
+        //// TODO: json转换的List拼接createSQL
+        //val tuple = jsonListToHSql("dwd", "lamp", "dwd_device_index", jsonList)
+        //println("建表语句" + tuple._1)
+        //println("插入语句" + tuple._2)
+        //println("json转cast" + tuple._3)
 
         //println((jValue \ "timestamp").extract[String])
 

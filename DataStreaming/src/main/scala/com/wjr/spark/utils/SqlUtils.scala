@@ -125,7 +125,7 @@ object SqlUtils {
      *
      * @return
      */
-    def createCKTable(tbName: String, option: Map[String, String], engine: String,
+    def createCKTable(tbName: String, option: List[Tuple2[String, String]], engine: String,
                       orderBy: String,
                       partitionBy: String,
                       primaryKey: String = null
@@ -136,7 +136,7 @@ object SqlUtils {
            |)engine =$engine
            |partition by ($partitionBy)
            |${if (primaryKey != null) s"primary key ($primaryKey)"}
-           |order by ($orderBy);
+           |order by ($orderBy)
            |""".stripMargin
     }
 
@@ -206,7 +206,7 @@ object SqlUtils {
         val spark = ProjectEnv.spark
         //
         //// TODO: 小文件合并 每天执行一次，前提开启动态分区（在ProjectEnv中 ）
-        spark.sql(mergeSmallFile("lamp", "dwd_device_index"))
+        spark.sql(mergeSmallFile("lamp", "dwd_normal_device"))
 
         // TODO: hive-ods表
         //val odsLampLogTable = createExternalTable("lamp", "ods_lamp_log", "ods", Map("lines" -> "string"))

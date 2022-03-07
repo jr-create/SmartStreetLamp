@@ -44,6 +44,11 @@ public class DwsServiceImpl implements DeviceManagementService {
     }
 
     @Override
+    public Long getNationDeviceCount() {
+        return deviceManagementMapper.getNationDeviceCount();
+    }
+
+    @Override
     public List<DwsRegionDeviceValue> getRoadDeviceValueAvgByName(String road_name) {
         return deviceManagementMapper.getRoadDeviceValueAvgByName(road_name);
     }
@@ -59,7 +64,7 @@ public class DwsServiceImpl implements DeviceManagementService {
     }
 
     @Override
-    public List<AdsRegionTypeCount> getRegionTypeCount() {
-        return deviceManagementMapper.getRegionTypeCount();
+    public List<AdsRegionTypeCount> getRegionTypeCount(String province_name) {
+        return deviceManagementMapper.getRegionTypeCount(province_name);
     }
 }

@@ -22,6 +22,6 @@ public class BaseDeviceType {
      * id
      */
     private Integer id;
-    private String typeName;
+    private String name;
     private String func;
 }
