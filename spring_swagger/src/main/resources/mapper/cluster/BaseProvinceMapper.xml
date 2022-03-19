@@ -8,4 +8,7 @@
         select * from base_province
         where name=#{name}
     </select>
+    <select id="findAll" resultType="com.wjr.spring_swagger.bean.dim.BaseProvince">
+        select * from base_province
+    </select>
 </mapper>

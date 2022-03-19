@@ -24,11 +24,11 @@ spring:
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   #============== kafka ===================
   # 指定 kafka 代理地址，可以多个
-#  kafka:
-#    bootstrap-servers: hadoop01:9092,hadoop02:9092,hadoop03:9092
-#    # 指定消息 key 和消息体的编解码方式
-#    producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#    producer.value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  #  kafka:
+  #    bootstrap-servers: hadoop01:9092,hadoop02:9092,hadoop03:9092
+  #    # 指定消息 key 和消息体的编解码方式
+  #    producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
+  #    producer.value-serializer: org.apache.kafka.common.serialization.StringSerializer
   #==============短信=======================
   mail:
     host: smtp.163.com
@@ -42,7 +42,7 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
-#==============Redis=======================
+  #==============Redis=======================
   redis:
     database: 0       # Redis数据库索引（默认为0）,如果设置为1，那么存入的key-value都存放在select 1中
     #  127.0.0.1
@@ -57,6 +57,14 @@ spring:
         max-idle: 20      # 连接池中的最大空闲连接
         min-idle: 0       # 连接池中的最小空闲连接
     timeout: 5000     # 连接超时
+  # 热部署
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+      exclude: test/**
+  freemarker:
+    cache: false    #页面不加载缓存，修改即时生效
 #============配置了两个数据源==============
 master:
   datasource:

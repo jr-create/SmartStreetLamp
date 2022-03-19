@@ -14,10 +14,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+/**
+ * 全局日志
+ */
 @Component
 @Aspect
 public class WebLogAspect {
-    public static final Logger logger = LoggerFactory.getLogger("http");
+    public static final Logger logger = LoggerFactory.getLogger("");
 
     @Pointcut("execution(public * com.wjr.spring_swagger.controller..*.*(..))")
     public void webLog(){}

@@ -1,16 +1,17 @@
 package com.wjr.spring_swagger.service.impl;
 
-import com.wjr.spring_swagger.bean.dim.BaseDeviceType;
-import com.wjr.spring_swagger.bean.dim.BaseManagement;
-import com.wjr.spring_swagger.bean.dim.BaseProvince;
-import com.wjr.spring_swagger.bean.dim.BaseRoad;
-import com.wjr.spring_swagger.mapper.cluster.BaseDeviceTypeMapper;
-import com.wjr.spring_swagger.mapper.cluster.BaseManagementMapper;
-import com.wjr.spring_swagger.mapper.cluster.BaseProvinceMapper;
-import com.wjr.spring_swagger.mapper.cluster.BaseRoadMapper;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.wjr.spring_swagger.bean.dim.*;
+import com.wjr.spring_swagger.mapper.cluster.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ import java.util.List;
  * @Description:
  */
 @Service
+@Slf4j
 public class LampServiceImpl {
     @Autowired
     BaseRoadMapper baseRoadMapper;
@@ -34,8 +36,15 @@ public class LampServiceImpl {
     @Autowired
     BaseDeviceTypeMapper baseDeviceTypeMapper;
 
+    @Autowired
+    BaseRoadRegionMapper baseRoadRegionMapper;
+
     public List<BaseRoad> getAllDevice() {
         return baseRoadMapper.findAll();
+    }
+
+    public BaseRoad findByPrimaryKey(int id) {
+        return baseRoadMapper.findByPrimaryKey(id);
     }
 
     public void insertBaseRoad(BaseRoad baseRoad) {
@@ -50,12 +59,46 @@ public class LampServiceImpl {
         return baseProvinceMapper.findProvinceByName(name);
     }
 
-    public BaseRoad findBaseRoadByAttribute(String name, String cityName, Integer provinceId){
-        return baseRoadMapper.findBaseRoadByAttribute(name,cityName,provinceId);
+    public BaseRoad findBaseRoadByAttribute(String name, String cityName, Integer provinceId) {
+        return baseRoadMapper.findBaseRoadByAttribute(name, cityName, provinceId);
     }
 
-    public List<BaseDeviceType> findAllBaseDeviceType(){
+    public List<BaseDeviceType> findAllBaseDeviceType() {
         return baseDeviceTypeMapper.findAll();
     }
 
+    public List<BaseRoadRegion> getAllBaseRoadRegion() {
+        return baseRoadRegionMapper.findAll();
+    }
+
+    public Object RoadList(int pageNum, int limitNum, String sort, Integer id, String provinceName) {
+        JSONObject jsonObject = new JSONObject();
+        Page<?> page = PageHelper.startPage(pageNum, limitNum);
+        log.info("设置第" + pageNum + "页两条数据!");
+        List<BaseRoadRegion> list = new ArrayList<>();
+        if (ObjectUtils.isEmpty(id) && ObjectUtils.isEmpty(provinceName)) {
+            list = getAllBaseRoadRegion();
+        }
+        jsonObject.put("total", page.getTotal());
+        if (!ObjectUtils.isEmpty(sort) && sort.equals("-id")) {
+            Collections.reverse(list);
+        }
+        if (!ObjectUtils.isEmpty(id)) {
+            // 根据Id进行查询
+            BaseRoadRegion byPrimaryKey = baseRoadRegionMapper.findByPrimaryKey(id);
+            list.clear();
+            list.add(byPrimaryKey);
+        }
+        if (!ObjectUtils.isEmpty(provinceName)) {
+            list.clear();
+            list = baseRoadRegionMapper.findByProvinceName(provinceName);
+        }
+        jsonObject.put("items", list);
+        log.info("总共有:" + page.getTotal() + "条数据,实际返回:" + list.size() + "两条数据!");
+        return jsonObject;
+    }
+
+    public Object getAllProvinceName() {
+        return baseProvinceMapper.findAll();
+    }
 }

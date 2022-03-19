@@ -5,43 +5,26 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * @author Lenovo-wjr
  * @Package: com.wjr.spring_swagger.bean.dim
- * @ClassName: BaseProvince
- * @create 2022-03-01 21:29
+ * @ClassName: BaseRegion
+ * @create 2022-03-12 22:22
  * @Description:
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseProvince {
-
-
+public class BaseRoadRegion {
+    //设备id
     @TableId(type = IdType.AUTO)
-    /**
-     * id
-     */
     private Integer id;
-
-    /**
-     * 省名称
-     */
+    //设备名称
     private String name;
-
-    /**
-     * 大区id
-     */
-    private String regionId;
-
-    /**
-     * 行政区位码
-     */
+    private String cityName;
+    private String provinceName;
+    private String regionName;
     private String areaCode;
-
-    /**
-     * 国际编码
-     */
     private String isoCode;
-
 }

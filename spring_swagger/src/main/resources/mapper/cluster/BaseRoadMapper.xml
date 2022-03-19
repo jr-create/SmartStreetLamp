@@ -10,12 +10,17 @@
     </insert>
 
     <select id="findAll" resultType="com.wjr.spring_swagger.bean.dim.BaseRoad">
-        select *
-        from base_road
+        select * from base_road
     </select>
 
     <select id="findBaseRoadByAttribute" resultType="com.wjr.spring_swagger.bean.dim.BaseRoad">
         select * from base_road
         where name =#{name} and city_name=#{cityName} and province_id = #{provinceId}
     </select>
+
+    <select id="findByPrimaryKey" resultType="com.wjr.spring_swagger.bean.dim.BaseRoad">
+        select * from base_road
+        where id=#{id}
+    </select>
+
 </mapper>

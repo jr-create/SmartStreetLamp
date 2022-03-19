@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjr.spring_swagger.mapper.cluster.BaseRoadRegionMapper">
+
+    <select id="findAll" resultType="com.wjr.spring_swagger.bean.dim.BaseRoadRegion">
+        select r.id,
+               r.name,
+               r.city_name as city_name,
+               bp.name as province_name,
+               br.region_name as region_name,
+               bp.area_code as area_code,
+               bp.iso_code as iso_code
+        from base_road r
+                 join base_province bp on r.province_id = bp.id
+                 join base_region br on bp.region_id = br.id
+    </select>
+
+    <select id="findByPrimaryKey" resultType="com.wjr.spring_swagger.bean.dim.BaseRoadRegion">
+        select r.id,
+               r.name,
+               r.city_name as city_name,
+               bp.name as province_name,
+               br.region_name as region_name,
+               bp.area_code as area_code,
+               bp.iso_code as iso_code
+        from base_road r
+                 join base_province bp on r.province_id = bp.id and r.id=#{id}
+                 join base_region br on bp.region_id = br.id
+    </select>
+
+    <select id="findByProvinceName" resultType="com.wjr.spring_swagger.bean.dim.BaseRoadRegion">
+        select r.id,
+               r.name,
+               r.city_name as city_name,
+               bp.name as province_name,
+               br.region_name as region_name,
+               bp.area_code as area_code,
+               bp.iso_code as iso_code
+        from base_road r
+                 join base_province bp on r.province_id = bp.id and bp.name=#{name}
+                 join base_region br on bp.region_id = br.id
+    </select>
+
+</mapper>
