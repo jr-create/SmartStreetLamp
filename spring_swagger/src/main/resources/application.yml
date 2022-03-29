@@ -24,11 +24,20 @@ spring:
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   #============== kafka ===================
   # 指定 kafka 代理地址，可以多个
-  #  kafka:
-  #    bootstrap-servers: hadoop01:9092,hadoop02:9092,hadoop03:9092
-  #    # 指定消息 key 和消息体的编解码方式
-  #    producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
-  #    producer.value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  kafka:
+    bootstrap-servers: 42.192.65.44:9092
+    # 指定消息 key 和消息体的编解码方式
+    producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    producer.value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: spring
+      # 最早未被消费的offset
+      auto-offset-reset: earliest
+      # 批量一次最大拉取数量
+      max-poll-records: 1000
+      # 自动提交
+      auto-commit-interval: 1000
+      enable-auto-commit: true
   #==============短信=======================
   mail:
     host: smtp.163.com

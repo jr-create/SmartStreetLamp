@@ -3,7 +3,7 @@ import com.wjr.spark.env.ProjectEnv
 import com.wjr.spark.utils.{JsonUtils, SqlUtils}
 import org.apache.spark.sql.functions.expr
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, Dataset}
+import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 
 import java.lang.management.ManagementFactory
 
@@ -16,7 +16,11 @@ import java.lang.management.ManagementFactory
  * 源数据转换
  */
 object StructStreaming_DataSource extends App {
-    val spark = ProjectEnv.spark
+    val spark = SparkSession.builder
+      .config("spark.sql.parquet.writeLegacyFormat", true)
+      // TODO: 序列化保证
+      .master("local[*]").appName("test")
+      .enableHiveSupport().getOrCreate()
     val sparkContext = ProjectEnv.sparkContext
 
     import spark.implicits._

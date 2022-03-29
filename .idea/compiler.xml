@@ -10,6 +10,7 @@
         <module name="spring_swagger" />
         <module name="DataStreaming" />
         <module name="DataSource" />
+        <module name="FlinkDemo" />
       </profile>
     </annotationProcessing>
   </component>

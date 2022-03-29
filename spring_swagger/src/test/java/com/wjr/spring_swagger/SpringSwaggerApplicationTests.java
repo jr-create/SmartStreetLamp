@@ -8,6 +8,7 @@ class SpringSwaggerApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

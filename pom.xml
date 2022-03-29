@@ -12,6 +12,7 @@
         <module>DataSource</module>
         <module>DataStreaming</module>
         <module>spring_swagger</module>
+        <module>FlinkDemo</module>
     </modules>
 
 
