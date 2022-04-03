@@ -1,45 +1,74 @@
 package com.wjr.spring_swagger.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.wjr.spring_swagger.utils.HttpUtils;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class MessageHandleServiceImpl {
 
-    @Autowired
-    private RestTemplate restTemplate;
 
+    /**
+     * 通过 twilio 发送短信
+     */
+    public String twilioSendSms(String mobile,String body){
+        final String ACCOUNT_SID = "AC8149ab510d16d7a4e4f4119d54c79f28";
+        final String AUTH_TOKEN = "ae341d6d76e1cc997a3a9c50f309eb60";
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        Message message = Message.creator(
+                        new com.twilio.type.PhoneNumber("+86"+mobile),
+                        new com.twilio.type.PhoneNumber("+16068068106"),
+                        body)
+                .create();
 
-    public String sendSms() {
-        String url = "https://open.ucpaas.com/ol/sms/sendsms";
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("sid", "be4bb4a634e4ee04c336c35644a615b5");
-        jsonObject.put("token", "d1a26dc811abffc81607729f3fad09f4");
-        jsonObject.put("appid", "651f3cd3a973423792a303bc6d212f1d");
-        jsonObject.put("templateid", "");
-        jsonObject.put("param", "");
-        jsonObject.put("mobile", "");
-        jsonObject.put("uid", "");
-        String json = JSONObject.toJSONString(jsonObject);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(json, httpHeaders);
-        String result = restTemplate.postForObject(url, entity, String.class);
+        return message.getSid();
+    }
+    /**
+     * 只能发送验证码格式
+     * @param mobile
+     */
+    public void aliyunSendSms(String mobile,String code) {
+        String host = "http://yzx.market.alicloudapi.com";
+        String path = "/yzx/sendSms";
+        String method = "POST";
+        String appcode = "6501d20eee514ccdb643f5263d1e3c43";
+        Map<String, String> headers = new HashMap<String, String>();
+        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+        headers.put("Authorization", "APPCODE " + appcode);
+        //根据API的要求，定义相对应的Content-Type
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        Map<String, String> querys = new HashMap<String, String>();
+        Map<String, String> bodys = new HashMap<String, String>();
+        bodys.put("mobile", mobile);
+        bodys.put("param", "code:"+code);
+        bodys.put("tpl_id", "TP1710262");
 
-        return result;
+        try {
+            /**
+             * 重要提示如下:
+             * HttpUtils请从
+             * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/src/main/java/com/aliyun/api/gateway/demo/util/HttpUtils.java
+             * 下载
+             *
+             * 相应的依赖请参照
+             * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
+             */
+            HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
+            System.out.println(response.toString());
+            //获取response的body
+            //System.out.println(EntityUtils.toString(response.getEntity()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Autowired

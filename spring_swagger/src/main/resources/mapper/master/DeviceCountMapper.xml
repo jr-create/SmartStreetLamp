@@ -5,42 +5,54 @@
 <mapper namespace="com.wjr.spring_swagger.mapper.master.DeviceCountMapper">
     <!--所有设备信息-->
     <select id="getAllRoadDeviceCount" resultType="com.wjr.spring_swagger.bean.DwsRoadManagement">
-        select * from dws_road_management
+        select *
+        from dws_road_management
         order by create_time
     </select>
 
     <!--  提取重复sql  设备数量表 -->
-    <sql id="header">
-        select  province_name, city_name,road_name,
-               round(avg(new_device_count), 2) as new_device_count,
-               round(avg(new_type_count), 2)   as new_type_count,
-               round(avg(normal_count), 2)     as normal_count,
-               round(avg(abnormal_count), 2)   as abnormal_count,
-               round(avg(device_total), 2)     as device_total,
-               round(avg(type_count), 2)       as type_count,
-               create_time
-        from dws_road_management
-    </sql>
-
     <sql id="order">
-        group by province_name, city_name,road_name,create_time
         order by create_time
     </sql>
 
     <select id="getRoadDeviceCountById" resultType="com.wjr.spring_swagger.bean.DwsRegionDeviceCount">
-        <include refid="header"/>
+        select province_name,city_name,road_name,
+            round(sum(new_device_count), 2) as new_device_count,
+            round(sum(new_type_count), 2) as new_type_count,
+            round(sum(normal_count), 2) as normal_count,
+            round(sum(abnormal_count), 2) as abnormal_count,
+            round(sum(device_total), 2) as device_total,
+            round(sum(type_count), 2) as type_count,
+            toYYYYMMDD(create_time) as create_time
+        from dws_road_management
         where road_name = #{road_name}
+        group by province_name,city_name,road_name,create_time
         <include refid="order"/>
     </select>
 
+    <sql id="citySelect">
+        select province_name,
+               city_name,
+               round(sum(new_device_count), 2) as new_device_count,
+               round(sum(new_type_count), 2)   as new_type_count,
+               round(sum(normal_count), 2)     as normal_count,
+               round(sum(abnormal_count), 2)   as abnormal_count,
+               round(sum(device_total), 2)     as device_total,
+               round(sum(type_count), 2)       as type_count,
+               toYYYYMMDD(create_time)         as create_time
+        from dws_road_management
+    </sql>
+
     <select id="getCityDeviceCountById" resultType="com.wjr.spring_swagger.bean.DwsRegionDeviceCount">
-        <include refid="header"/>
+        <include refid="citySelect"/>
         where city_name = #{city_name}
+        group by province_name, city_name,create_time
         <include refid="order"/>
     </select>
     <select id="getProvinceDeviceCountById" resultType="com.wjr.spring_swagger.bean.DwsRegionDeviceCount">
-        <include refid="header"/>
+        <include refid="citySelect"/>
         where province_name = #{province_name}
+        group by province_name, city_name,create_time
         <include refid="order"/>
     </select>
 

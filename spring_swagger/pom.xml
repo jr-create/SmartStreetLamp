@@ -161,6 +161,29 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+        <!-- StringUtils-->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <!-- http -->
+        <!-- dwsDeviceManagement <dependency>-->
+        <!-- <groupId>org.apache.httpcomponents</groupId>-->
+        <!-- <artifactId>httpclient</artifactId>-->
+        <!-- <version>4.2.1</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!-- <groupId>org.apache.httpcomponents</groupId>-->
+        <!-- <artifactId>httpcore</artifactId>-->
+        <!-- <version>4.2.1</version>-->
+        <!--  </dependency>-->
+        <!-- 短信 -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>8.28.0</version>
+        </dependency>
     </dependencies>
 
     <build>

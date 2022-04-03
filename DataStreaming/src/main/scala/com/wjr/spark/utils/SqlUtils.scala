@@ -2,6 +2,7 @@ package com.wjr.spark.utils
 
 import com.wjr.spark.bean.{DeviceCountInfo, Sensor}
 import com.wjr.spark.env.ProjectEnv
+import com.wjr.spark.streaming.DeciceHandleFormatStatistics.spark
 import com.wjr.spark.utils.JsonUtils.getObjectValue
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
@@ -207,10 +208,9 @@ object SqlUtils {
         //
         //// TODO: 小文件合并 每天执行一次，前提开启动态分区（在ProjectEnv中 ）
         spark.sql(mergeSmallFile("lamp", "dwd_normal_device"))
-
         // TODO: hive-ods表
         //val odsLampLogTable = createExternalTable("lamp", "ods_lamp_log", "ods", Map("lines" -> "string"))
-        //
+
         //// TODO: clickhouse的地区数量表
         //val dwd_device_count = createCKTable("dwd_device_count", DeviceCountInfoOption,
         //    "ReplacingMergeTree(create_time)", "road_id", "road_id", "road_id")

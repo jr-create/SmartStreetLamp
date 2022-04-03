@@ -77,7 +77,6 @@ object JsonUtils {
             //import org.json4s._
             implicit val formats = DefaultFormats // TODO: 需要放在函数内，来防止NotSerializableException
             val str = compact(Extraction.decompose(data))
-            println("发送到Kafka的数据：" + str) // TODO: 将CountCase样例类转为json
             str
         } catch {
             case e: Exception =>
@@ -130,7 +129,7 @@ object JsonUtils {
         val nowDate: String = new SimpleDateFormat("yyyy-MM-dd").format(new Date())
         var road_id = ""
         // TODO: sqlCast语句
-        var strings = list.map(x => {
+        val strings = list.map(x => {
             val schema = x.toString.split(" ")
             val attribute = if (schema(0).split("\\.").length > 1) {
                 schema(0).split("\\.")(1)
@@ -203,27 +202,27 @@ object JsonUtils {
 
         var json = ""
 
-        //println(json)
-        for (i <- 0 until 1) {
-            val random = new Random().nextInt(11 + 1) // TODO: 生成n+1的随机生成数
+        for (i <- 0 until 100) {
+            val random = new Random().nextInt(20 + 1) // TODO: 生成n+1的随机生成数
             val typeNum = new Random().nextInt(7 + 1) // TODO: 生成n+1的随机生成数
             val number = new Random().nextInt(9) + 1 // TODO: 生成n+1的随机生成数
             val device_id = new Random().nextInt(1000 + 1) // TODO: 生成n+1的随机生成数
-            val error_code = 0 // TODO: 生成n+1的随机生成数
+            val error_code = 1 // TODO: 生成0/1的随机生成数
             val vol = Math.round((Random.nextGaussian()+4)*100)/100 // TODO: 生成n+1的随机生成数
             json =
                 s"""
                    |{"reason":"success","device_id":"my_00$device_id","type_id":${typeNum},"timestamp":${System.currentTimeMillis() / 1000},"error_code":$error_code,"road_id":${random},"longitude":"11${number}.${number}820083778303","latitude":"3${number}.${number}242552469552","values":{"voltage":"$vol","temperature":"2${vol}","humidity":"${vol * 25}","lighting":"${vol * 25}","PM2_5":"${vol * 25}","CO_2":"${vol * 25}","info":"yin阴","direct":"xibeifeng西北风","power":"${number}级"},"test":["a1",2]}
                    |""".stripMargin
             if (error_code == 1) {
-               MyKafkaSink.send("dwd_device_error", json)
+               MyKafkaSink.send("dwd_error_device", json)
             }
             else {
-               MyKafkaSink.send("dwd_device_normal", json)
+               MyKafkaSink.send("dwd_normal_device", json)
             }
-            // println(json)
-            MyKafkaSink.send("ods_lamp_log", json.trim)
+            println(error_code)
+            // MyKafkaSink.send("ods_lamp_log", json.trim)
         }
+        println(json)
         //import org.json4s._
         //implicit val formats = DefaultFormats
         //
@@ -244,7 +243,6 @@ object JsonUtils {
         //val className = jsonGet.toString.split("""\(""").head
         //println(s"${className}样例类指标：" + getFields[DeviceInfo].toBuffer)
         //println("sql拼接后Array：" + ObjectToCastStr[DeviceInfo].toBuffer)
-
     }
 
 

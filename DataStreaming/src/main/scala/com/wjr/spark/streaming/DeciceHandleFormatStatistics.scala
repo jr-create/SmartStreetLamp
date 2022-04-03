@@ -1,7 +1,7 @@
 package com.wjr.spark.streaming
 
 import com.wjr.spark.env.ProjectEnv
-import com.wjr.spark.sink.ClickhouseSink
+import com.wjr.spark.sink.{ClickhouseSink, MyKafkaSink}
 import com.wjr.spark.utils.{ClickhouseJdbcUtil, JsonUtils, LazyLogging, SqlUtils}
 import org.apache.spark.sql.DataFrame
 
@@ -28,7 +28,7 @@ object DeciceHandleFormatStatistics extends LazyLogging {
         // 1、获取Kafka数据 Kafka Source =》Json数据
         val kafkaDF: DataFrame = spark.readStream
             .format("kafka")
-            .option("kafka.bootstrap.servers", "hadoop01:9092")
+            .option("kafka.bootstrap.servers", s"${MyKafkaSink.broker_list}")
             .option("subscribe", "dwd_normal_device,dwd_error_device")
             .option("failOnDataLoss", "false")
             .load()
@@ -40,7 +40,7 @@ object DeciceHandleFormatStatistics extends LazyLogging {
         // json 转为（创建hive表语句，插入hive语句，sparkSQL解析语句）
         val tuple = JsonUtils.jsonListToHSql("dwd", "lamp", "dwd_normal_device", jsonList)
         spark.sql(tuple._1) // 创建 dwd_normal_device hive表
-        spark.sql(tuple._2).show
+        // spark.sql(tuple._2).show // 插入缓存的一天数据
 
         // Clickhouse 连接
         val clickHouseConnection = ClickhouseJdbcUtil.getConnection()
@@ -85,21 +85,21 @@ object DeciceHandleFormatStatistics extends LazyLogging {
         dataFrame.withWatermark("t", delayThreshold = "10 second").selectExpr(
             tuple._3: _*
         ).writeStream
-            //.option("checkpointLocation", s"hdfs://hadoop01:8020/checkpoint/dir/JsonToDwdHive")
-            .option("checkpointLocation", s"checkpoint/dir/JsonToDwdHive")
+            .option("checkpointLocation", s"hdfs://hadoop01:8020/checkpoint/dir/NormalJsonToDwdHive")
+            // .option("checkpointLocation", s"checkpoint/dir/JsonToDwdHive")
             .foreachBatch((ds: DataFrame, epochu_id: Long) => {
-
+                // 写入Hive
                 ds.write.mode("append").format("hive")
                     .partitionBy("dt", "road_id")
                     .saveAsTable(s"lamp.$tbName")
-                //ds.drop("test").join(ckDF, "road_id").show
-                // TODO: 写入Clickhouse
+                // ds.drop("test").join(ckDF, "road_id").show
+                // 写入Clickhouse
                 ds.drop("test")
                     .write.mode("append")
                     .jdbc(ClickhouseSink.propertiesMap.get("url").get, tbName, ClickhouseSink.prop)
                 ()
             })
-            .queryName("Json_Dwd_Hive_CK").start()
+            .queryName("Normal_Dwd_Hive_CK").start()
     }
 
     /**
@@ -114,8 +114,8 @@ object DeciceHandleFormatStatistics extends LazyLogging {
         dataFrame.withWatermark("t", delayThreshold = "10 second").selectExpr(
             tuple._3: _*
         ).writeStream
-            //.option("checkpointLocation", s"hdfs://hadoop01:8020/checkpoint/dir/JsonToDwdHive")
-            .option("checkpointLocation", s"checkpoint/dir/JsonToDwdCK")
+            .option("checkpointLocation", s"hdfs://hadoop01:8020/checkpoint/dir/ErrorJsonToDwdCK")
+            // .option("checkpointLocation", s"checkpoint/dir/JsonToDwdCK")
             .foreachBatch((ds: DataFrame, epochu_id: Long) => {
                 // TODO: 写入Clickhouse
                 ds.drop("test")
@@ -123,7 +123,7 @@ object DeciceHandleFormatStatistics extends LazyLogging {
                     .jdbc(ClickhouseSink.propertiesMap.get("url").get, tbName, ClickhouseSink.prop)
                 ()
             })
-            .queryName("Json_Dwd_CK").start()
+            .queryName("Error_Dwd_CK").start()
         //.join(ckDF, "road_id")
         //.select(to_json(struct("*")))
         //.toDF("value")

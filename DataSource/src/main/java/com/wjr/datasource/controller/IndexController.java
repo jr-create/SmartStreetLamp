@@ -28,15 +28,22 @@ public class IndexController {
         JSONObject jsonObject = JSON.parseObject(mqttLog);
         JSONObject payload = jsonObject.getJSONObject("payload");
         System.out.println(payload);
-        Integer error_code = payload.getInteger("error_code");
-        if (error_code == 0) {//启动日志
-            String topic = "smart_start_bak";
-            System.out.println("mqtt_data send to "+topic);
-            kafkaTemplate.send(topic, payload.toJSONString());//发送到kafka中
-        } else {//事件日志
-            String topic = "smart_error_bak";
-            kafkaTemplate.send(topic, payload.toJSONString());
-        }
+
+        kafkaTemplate.send("ods_lamp_log", payload.toJSONString());
+        // Integer error_code = payload.getInteger("error_code");
+        // if (error_code == 0) {//启动日志
+        //     String topic = "smart_start_bak";
+        //     System.out.println("mqtt_data send to "+topic);
+        //     kafkaTemplate.send(topic, payload.toJSONString());//发送到kafka中
+        // } else {//事件日志
+        //     String topic = "smart_error_bak";
+        //     kafkaTemplate.send(topic, payload.toJSONString());
+        // }
+        return "success";
+    }
+
+    @RequestMapping("/test")
+    public String test() {
         return "success";
     }
 }

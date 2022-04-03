@@ -8,15 +8,22 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="spring_swagger" />
+        <module name="mqtt_web" />
         <module name="DataStreaming" />
+        <module name="springboot_mqtt" />
         <module name="DataSource" />
         <module name="FlinkDemo" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mqtt1" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="DataSource" options="-parameters" />
+      <module name="mqtt1" options="-parameters" />
+      <module name="mqtt_web" options="-parameters" />
       <module name="spring_swagger" options="-parameters" />
     </option>
   </component>

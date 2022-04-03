@@ -14,6 +14,8 @@
         <option value="$PROJECT_DIR$/DataSource/pom.xml" />
         <option value="$PROJECT_DIR$/spring_swagger/pom.xml" />
         <option value="$PROJECT_DIR$/../../../download/company/FlinkDemo/pom.xml" />
+        <option value="$PROJECT_DIR$/../System Integration/springboot_mqtt/pom.xml" />
+        <option value="$PROJECT_DIR$/../System Integration/springboot_mqtt/mqtt_web/pom.xml" />
       </list>
     </option>
   </component>

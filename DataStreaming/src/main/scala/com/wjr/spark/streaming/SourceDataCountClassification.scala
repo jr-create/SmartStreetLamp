@@ -39,7 +39,7 @@ object SourceDataCountClassification extends LazyLogging {
         // TODO:1、获取Kafka数据 Kafka Source
         val kafkaDF: DataFrame = spark.readStream
             .format("kafka")
-            .option("kafka.bootstrap.servers", "hadoop01:9092")
+            .option("kafka.bootstrap.servers", s"${MyKafkaSink.broker_list}")
             .option("subscribe", "ods_lamp_log,dwd_device_count")
             .load()
 
@@ -93,6 +93,7 @@ object SourceDataCountClassification extends LazyLogging {
         kafkaJson.withWatermark("t", delayThreshold = "10 second")
             .writeStream
             .option("checkpointLocation", s"hdfs://hadoop01:8020/checkpoint/dir/kafkaSource")
+            // .option("checkpointLocation", s"/checkpoint/dir/kafkaSource")
             .foreach(
                 new ForeachWriter[Row] {
                     val newType: ListBuffer[DeviceInfo] = ListBuffer.empty[DeviceInfo] // TODO: 新增设备数
@@ -112,13 +113,10 @@ object SourceDataCountClassification extends LazyLogging {
                     }
 
                     def process(record: Row): Unit = {
-                        println("元数据：" + record)
                         if (record != null) { // TODO:  数据不为空
 
                             import org.json4s._
                             implicit val formats = DefaultFormats // TODO: 需要放在函数内，来防止NotSerializableException
-                            //implicit val formats = Serialization.formats(NoTypeHints)
-                            //for (i <- 0 until record.size) {
                             val json = record.getAs[String](0)
                             ProjectEnv.instance(json) // TODO: 缓存原始数据
                             val jValue = JsonMethods.parse(json)
@@ -128,7 +126,7 @@ object SourceDataCountClassification extends LazyLogging {
                             // TODO: Redis Key
                             val dauDeviceNormalKey = RedisConstant.dauDeviceNormalKey(deviceInfo.road_id.toString, dt) // TODO: 地区设备统计
                             val dauDeviceExceptKey = RedisConstant.dauDeviceExceptKey(deviceInfo.road_id.toString, dt) // TODO: 地区设备统计
-                            val dauTypeKey = RedisConstant.dauTypeKey(deviceInfo.road_id.toString, dt) // TODO: 地区设备类型
+                            val dauTypeKey = RedisConstant.dauTypeKey(deviceInfo.road_id.toString,dt) // TODO: 地区设备类型
 
                             if (deviceInfo.error_code == 1) { // TODO: 设备出现错误
                                 // TODO: 添加异常的设备
@@ -150,21 +148,25 @@ object SourceDataCountClassification extends LazyLogging {
                             if (typeIsExist == 1) {
                                 newType.append(deviceInfo)
                             }
-                            //设置key过期时间
-                            if (jedisClient.ttl(dauDeviceNormalKey) > 0 && jedisClient.ttl(dauDeviceExceptKey) > 0 && jedisClient.ttl(dauTypeKey) > 0) { //如果没有过期时间，则设置
+                            //设置key过期时间,如果没有过期时间，则设置
+                            if (jedisClient.ttl(dauDeviceNormalKey) > 0 ){
                                 jedisClient.expire(dauDeviceNormalKey, 3600 * 24)
+                            }
+                            if( jedisClient.ttl(dauDeviceExceptKey) > 0 ){
                                 jedisClient.expire(dauDeviceExceptKey, 3600 * 24)
+                            }
+                            if (jedisClient.ttl(dauTypeKey) > 0) {
                                 jedisClient.expire(dauTypeKey, 3600 * 24)
                             }
-                            println("环境传感器指标：" + deviceInfo.values)
-                            // TODO: 通过差集获取总的设备数（排除两个队列中都有的设备）
-                            val allDevice: util.Set[String] = jedisClient.sdiff(dauDeviceNormalKey, dauDeviceExceptKey)
+                            // TODO: 获取当天地区全部设备数量 并集-交集
+                            val allDevice = jedisClient.sunion(dauDeviceNormalKey, dauDeviceExceptKey).size()-jedisClient.sinter(dauDeviceNormalKey,dauDeviceExceptKey).size()
                             val normalCount = jedisClient.scard(dauDeviceNormalKey)
                             val abnormalCount = jedisClient.scard(dauDeviceExceptKey)
                             val typeCount = jedisClient.scard(dauTypeKey)
                             val nowDate = dtf.format(new Date())
                             val deviceCountInfo = DeviceCountInfo(deviceInfo.road_id, newDevice.size, newType.size,
-                                normalCount, abnormalCount, allDevice.size(), typeCount, nowDate)
+                                normalCount, abnormalCount, allDevice, typeCount, nowDate)
+                            println("设备数量统计:" + deviceCountInfo)
                             try {
                                 // TODO: 设备数量统计表保存到Hbase中
                                 //PhoenixJdbcUtil.executeSql(phoenixConnection,SqlUtils.insertPhoenixData("dwd_device_count",
