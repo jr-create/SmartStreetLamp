@@ -1,11 +1,15 @@
-flink spark
-hive hadoop
+flink
+spark
+hive
+hadoop
 hudi
 IOTDB
 kafka
 kafka
 hive
-spark hive
+spark
+hive
 stream
-hudilskdfj flink
+hudilskdfj
+flink
 hudi

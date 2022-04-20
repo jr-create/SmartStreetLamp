@@ -8,4 +8,7 @@
         insert into base_management (name, road_name, start_time, end_time)
         values (#{name}, #{roadName}, #{startTime}, #{endTime})
     </insert>
+    <select id="findAll" resultType="com.wjr.spring_swagger.bean.dim.BaseManagement">
+        select * from base_management
+    </select>
 </mapper>

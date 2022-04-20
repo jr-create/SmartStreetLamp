@@ -39,7 +39,7 @@ public class LampServiceImpl {
     @Autowired
     BaseRoadRegionMapper baseRoadRegionMapper;
 
-    public List<BaseRoad> getAllDevice() {
+    public List<BaseRoad> findAllDevice() {
         return baseRoadMapper.findAll();
     }
 
@@ -74,31 +74,41 @@ public class LampServiceImpl {
     public Object RoadList(int pageNum, int limitNum, String sort, Integer id, String provinceName) {
         JSONObject jsonObject = new JSONObject();
         Page<?> page = PageHelper.startPage(pageNum, limitNum);
-        log.info("设置第" + pageNum + "页两条数据!");
+        log.info("设置第" + pageNum + "页数据!");
         List<BaseRoadRegion> list = new ArrayList<>();
         if (ObjectUtils.isEmpty(id) && ObjectUtils.isEmpty(provinceName)) {
             list = getAllBaseRoadRegion();
         }
         jsonObject.put("total", page.getTotal());
-        if (!ObjectUtils.isEmpty(sort) && sort.equals("-id")) {
+        if (!ObjectUtils.isEmpty(sort) && sort.equals("-id")) {//倒序
             Collections.reverse(list);
         }
-        if (!ObjectUtils.isEmpty(id)) {
-            // 根据Id进行查询
+        if (!ObjectUtils.isEmpty(id)) { // 根据Id进行查询
             BaseRoadRegion byPrimaryKey = baseRoadRegionMapper.findByPrimaryKey(id);
             list.clear();
             list.add(byPrimaryKey);
         }
-        if (!ObjectUtils.isEmpty(provinceName)) {
+        if (!ObjectUtils.isEmpty(provinceName)) {// 根据省份名称进行查询
             list.clear();
             list = baseRoadRegionMapper.findByProvinceName(provinceName);
         }
         jsonObject.put("items", list);
-        log.info("总共有:" + page.getTotal() + "条数据,实际返回:" + list.size() + "两条数据!");
+        log.info("总共有:" + page.getTotal() + "条数据,实际返回:" + list.size() + "条数据!");
         return jsonObject;
     }
 
-    public Object getAllProvinceName() {
+    public Object findAllProvinceName() {
         return baseProvinceMapper.findAll();
+    }
+
+    public Object findAllBaseManagement(int pageNum, int limitNum){
+        JSONObject jsonObject = new JSONObject();
+        Page<?> page = PageHelper.startPage(pageNum, limitNum);
+        log.info("设置第" + pageNum + "页数据!");
+        List<BaseManagement> managements = baseManagementMapper.findAll();
+        jsonObject.put("total", page.getTotal());
+        jsonObject.put("items", managements);
+        log.info("总共有:" + page.getTotal() + "条数据,实际返回:" + managements.size() + "条数据!");
+        return jsonObject;
     }
 }

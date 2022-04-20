@@ -50,7 +50,7 @@ object TransformTest {
         val outTag2 = OutputTag[TempSensor]("IsOne")
         val outputStream = dataStream.process[TempSensor]((sensor, context, collection) => {
             if (sensor.temperature > 20) {
-                context.output(outTag1, sensor)
+                context.output(outTag1, sensor) //输出到侧输出流
             } else {
                 context.output(outTag2, sensor)
             }

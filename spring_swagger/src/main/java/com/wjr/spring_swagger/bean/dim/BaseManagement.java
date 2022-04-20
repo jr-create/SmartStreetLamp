@@ -35,7 +35,11 @@ public class BaseManagement implements Serializable {
      * name
      */
     private String name;
-
+    private String sex;
+    private Integer age;
+    private String phone;
+    private String email;
+    private String cardId;
     /**
      * road_id
      */

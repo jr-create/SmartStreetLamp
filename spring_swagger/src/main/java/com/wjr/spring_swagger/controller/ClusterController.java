@@ -46,9 +46,9 @@ public class ClusterController {
         return new WebResult(20000, lampService.RoadList(pageNum, limitNum, sort, id, provinceName));
     }
 
-    @GetMapping("getAllProvinceName")
-    public WebResult getAllProvinceName() {
-        return new WebResult(20000, lampService.getAllProvinceName());
+    @GetMapping("findAllProvinceName")
+    public WebResult findAllProvinceName() {
+        return new WebResult(20000, lampService.findAllProvinceName());
     }
 
     @PostMapping("addBaseRoad")
@@ -82,14 +82,24 @@ public class ClusterController {
     @ApiOperation(value = "插入", notes = "添加管理人员信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "管理人员", required = true),
+            @ApiImplicitParam(name = "sex", value = "性别", required = true),
+            @ApiImplicitParam(name = "age", value = "年龄", required = true),
+            @ApiImplicitParam(name = "phone", value = "手机号", required = true),
+            @ApiImplicitParam(name = "email", value = "邮箱", required = true),
+            @ApiImplicitParam(name = "card_id", value = "身份证号", required = true),
             @ApiImplicitParam(name = "road_name", value = "道路名称", required = true),
             @ApiImplicitParam(name = "start_time", value = "开始时间"),
             @ApiImplicitParam(name = "end_time", value = "结束时间")
     })
     public WebResult addManagement(@RequestParam String name,
+                                   @RequestParam String sex,
+                                   @RequestParam Integer age,
+                                   @RequestParam String phone,
+                                   @RequestParam String email,
+                                   @RequestParam String card_id,
                                    @RequestParam String road_name,
-                                   Date start_time,
-                                   Date end_time) {
+                                   @RequestParam(name = "start_time", required = false) Date start_time,
+                                   @RequestParam(name = "end_time", required = false)  Date end_time) {
 
         if (ObjectUtils.isEmpty(start_time) || ObjectUtils.isEmpty(end_time)) {
             try {
@@ -100,8 +110,17 @@ public class ClusterController {
                 return new WebResult(20000, "error");
             }
         }
-        BaseManagement baseManagement = new BaseManagement(1, name, road_name, start_time, end_time);
+        BaseManagement baseManagement = new BaseManagement(1, name, sex, age, phone, email,card_id, road_name, start_time, end_time);
         lampService.insertBaseManagement(baseManagement);
         return new WebResult(20000, "success");
+    }
+
+    @GetMapping("findAllBaseManagement")
+    @ResponseBody
+    @ApiOperation(value = "查询", notes = "获取管理人员信息")
+    public WebResult findAllBaseManagement(@RequestParam("page") int pageNum,
+                                   @RequestParam("limit") int limitNum) {
+
+        return new WebResult(20000, lampService.findAllBaseManagement(pageNum, limitNum));
     }
 }
