@@ -2,6 +2,8 @@ package com.wjr.datasource.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wjr.datasource.utils.LoggerAction;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,12 +24,15 @@ public class IndexController {
     @Autowired
     KafkaTemplate kafkaTemplate;//将kafka注入到Controller中
 
-
+    Logger logger = LoggerAction.logger;
     @RequestMapping("/")
     public String index(@RequestBody String mqttLog) {
+        System.out.println("请求："+mqttLog);
+
+        logger.info("请求："+mqttLog);
         JSONObject jsonObject = JSON.parseObject(mqttLog);
         JSONObject payload = jsonObject.getJSONObject("payload");
-        System.out.println(payload);
+        logger.info(this.getClass().getSimpleName()+"--"+payload.toJSONString());
 
         kafkaTemplate.send("ods_lamp_log", payload.toJSONString());
         // Integer error_code = payload.getInteger("error_code");
@@ -39,7 +44,7 @@ public class IndexController {
         //     String topic = "smart_error_bak";
         //     kafkaTemplate.send(topic, payload.toJSONString());
         // }
-        return "success";
+        return mqttLog;
     }
 
     @RequestMapping("/test")

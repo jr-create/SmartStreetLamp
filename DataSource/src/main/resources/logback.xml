@@ -1,39 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <!--落盘路径：/applog/gmall2020 根目录上 创建目录 F:-->
-    <property name="LOG_HOME" value="/opt/applog/smartDS/wjr_mqtt" />
-    <!--控制台-->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+<!-- scan属性未true时，如果配置文档发生改变将会进行重新加载 -->
+<!-- scanPeriod属性设置监测配置文件修改的时间间隔，默认单位为毫秒，在scan为true时才生效 -->
+<!-- debug属性如果为true时，会打印出logback内部的日志信息 -->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!-- 关闭logback系统无效日志 -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    <!-- 定义参数常量 -->
+    <!-- 日志级别：TRACE<DEBUG<INFO<WARN<ERROR，其中常用的是DEBUG、INFO和ERROR -->
+    <property name="log.level" value="INFO"/>
+
+    <!-- 文件保留时间 -->
+    <property name="log.maxHistory" value="30"/>
+
+    <!-- 日志存储路径 -->
+    <property name="log.filePath" value="./applog/smartDS/wjr_mqtt"/>
+
+    <!-- 日志的显式格式 -->
+    <property name="log.pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"></property>
+
+    <!-- 用于说明输出介质，此处说明控制台输出 -->
+    <appender name="consoleAppender"
+              class="ch.qos.logback.core.ConsoleAppender">
+
+        <!-- 类似于layout，除了将时间转化为数组，还会将转换后的数组输出到相应的文件中 -->
         <encoder>
-            <pattern>%msg%n</pattern>
+            <!-- 定义日志的输出格式 -->
+            <pattern>${log.pattern}</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
     </appender>
 
-    <!--追加器，描述如何写入到文件中（写在哪，格式，文件的切分）
-        ConsoleAppender - -> 追加到控制台
-        RollingFileAppender  - -> 滚动追加到文件
-     -->
-    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/app.log</file>
+    <!-- INFO，表示文件随着时间的推移按时间生成日志文件 -->
+    <appender name="infoAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 文件路径 -->
+        <file>${log.filePath}/info.log</file>
+
+        <!-- 滚动策略 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log_dir}/log-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <!-- 重启项目后删除日志 -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
+
         <encoder>
-            <pattern>%msg%n</pattern>
+            <pattern>${log.pattern}</pattern>
         </encoder>
+
+        <!-- 过滤器，过滤掉不是指定日志水平的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+        </filter>
     </appender>
 
+    <!-- ERROR，表示文件随着时间的推移按时间生成日志文件 -->
+    <appender name="errorAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-    <!-- 将某一个包下日志单独打印日志 -->
-    <!--控制器，描述如何选择追加器 -->
-    <!--注意：要是单独为某个类指定的时候，别忘了修改类的全限定名 -->
-    <logger name="com.wjr.logger.controller.LoggerController"
-            level="INFO" additivity="false">
-        <appender-ref ref="rollingFile" />
-        <appender-ref ref="console" />
+        <!-- 文件路径 -->
+        <file>${log.filePath}/error.log</file>
+
+        <!-- 滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <!-- 设置文件名称 -->
+            <fileNamePattern>
+                ${log.filePath}/error/error.%d{yyyy-MM-dd}.log.gz
+            </fileNamePattern>
+
+            <!-- 设置最大保存周期 -->
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+
+        <!-- 过滤器，过滤掉不是指定日志水平的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 设置日志级别 -->
+            <level>ERROR</level>
+
+            <!-- 如果跟该日志水平相匹配，则接受 -->
+            <onMatch>ACCEPT</onMatch>
+
+            <!-- 如果跟该日志水平不匹配，则过滤掉 -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 用于存放日志对象，同时指定关联的package位置 -->
+    <!-- name指定关联的package -->
+    <!-- level表明指记录哪个日志级别以上的日志 -->
+    <!-- appender-ref指定logger向哪个文件输出日志信息 -->
+    <!-- additivity为true时，logger会把根logger的日志输出地址加入进来，但logger水平不依赖于根logger -->
+    <logger name="com.wjr.datasource" level="${log.level}" additivity="false">
     </logger>
 
-    <root level="error" additivity="false">
-        <appender-ref ref="console" />
+    <!-- 特殊的logger，根logger -->
+    <root level="${log.level}" additivity="false">
+        <!-- 指定默认的日志输出 -->
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="infoAppender"/>-->
+        <appender-ref ref="errorAppender"/>-->
     </root>
+
 </configuration>

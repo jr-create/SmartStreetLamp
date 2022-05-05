@@ -5,10 +5,11 @@
 <mapper namespace="com.wjr.spring_swagger.mapper.cluster.BaseManagementMapper">
 
     <insert id="insert">
-        insert into base_management (name, road_name, start_time, end_time)
-        values (#{name}, #{roadName}, #{startTime}, #{endTime})
+        insert into base_management (name, sex, age, phone, email, card_id, road_name, start_time, end_time)
+        values (#{name}, #{sex}, #{age}, #{phone}, #{email}, #{cardId}, #{roadName}, #{startTime}, #{endTime})
     </insert>
     <select id="findAll" resultType="com.wjr.spring_swagger.bean.dim.BaseManagement">
-        select * from base_management
+        select *
+        from base_management
     </select>
 </mapper>

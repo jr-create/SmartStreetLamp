@@ -1,0 +1,14 @@
+
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title></title>
+<body>
+    启动成功
+    <form th:action="@{/mqtt/index}" method="post">
+        topic:<input type="text" name="topic"><br/>
+        message:<input type="text" name="msg">
+        <input type="submit" value="提交">
+    </form>
+</body>
+</html>

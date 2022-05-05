@@ -13,6 +13,7 @@
         <module>DataStreaming</module>
         <module>spring_swagger</module>
         <module>FlinkDemo</module>
+        <module>FlinkCDC</module>
     </modules>
 
 

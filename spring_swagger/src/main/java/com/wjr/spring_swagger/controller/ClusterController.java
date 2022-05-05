@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -53,9 +54,7 @@ public class ClusterController {
 
     @PostMapping("addBaseRoad")
     @ApiOperation(value = "插入", notes = "添加道路信息")
-    public WebResult addBaseRoad(
-            @RequestBody Map<String, String> request
-    ) {
+    public WebResult addBaseRoad(@RequestBody Map<String, String> request) {
         request.entrySet().forEach(x -> log.info(x.getKey() + " " + x.getValue()));
         String msg;
         String provinceName = request.getOrDefault("provinceName", null);
@@ -91,26 +90,29 @@ public class ClusterController {
             @ApiImplicitParam(name = "start_time", value = "开始时间"),
             @ApiImplicitParam(name = "end_time", value = "结束时间")
     })
-    public WebResult addManagement(@RequestParam String name,
-                                   @RequestParam String sex,
-                                   @RequestParam Integer age,
-                                   @RequestParam String phone,
-                                   @RequestParam String email,
-                                   @RequestParam String card_id,
-                                   @RequestParam String road_name,
-                                   @RequestParam(name = "start_time", required = false) Date start_time,
-                                   @RequestParam(name = "end_time", required = false)  Date end_time) {
-
+    public WebResult addManagement(@RequestBody Map<String, String> request) throws ParseException {
+        request.entrySet().forEach(x -> log.info(x.getKey() + " " + x.getValue()));
+        String name = request.getOrDefault("name", null);
+        String sex = request.getOrDefault("sex", null);
+        Integer age = Integer.parseInt(request.getOrDefault("age", "0"));
+        String phone = request.getOrDefault("phone", null);
+        String email = request.getOrDefault("email", null);
+        String card_id = request.getOrDefault("cardId", null);
+        String road_name = request.getOrDefault("roadName", null);
+        String startTime = request.getOrDefault("startTime", null);// 2022-05-05T06:08:05.520Z
+        String startTimeTemp = startTime.replace('T', ' ').split("\\.")[0];//2022-05-05T06:08:05.520Z ==> 2022-05-05 06:08:37
+        Date start_time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(startTimeTemp);//String => Data
+        Date end_time = null;
         if (ObjectUtils.isEmpty(start_time) || ObjectUtils.isEmpty(end_time)) {
             try {
                 start_time = new Date();
                 end_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("9999-12-31 23:59:59");
             } catch (Exception e) {
                 e.printStackTrace();
-                return new WebResult(20000, "error");
+                return new WebResult(40000, "error");
             }
         }
-        BaseManagement baseManagement = new BaseManagement(1, name, sex, age, phone, email,card_id, road_name, start_time, end_time);
+        BaseManagement baseManagement = new BaseManagement(1, name, sex, age, phone, email, card_id, road_name, start_time, end_time);
         lampService.insertBaseManagement(baseManagement);
         return new WebResult(20000, "success");
     }
@@ -119,7 +121,7 @@ public class ClusterController {
     @ResponseBody
     @ApiOperation(value = "查询", notes = "获取管理人员信息")
     public WebResult findAllBaseManagement(@RequestParam("page") int pageNum,
-                                   @RequestParam("limit") int limitNum) {
+                                           @RequestParam("limit") int limitNum) {
 
         return new WebResult(20000, lampService.findAllBaseManagement(pageNum, limitNum));
     }

@@ -57,7 +57,7 @@ public class DeviceErrorServiceImpl implements DeviceErrorMapper {
 
                 }
             }
-        }, 20,60, TimeUnit.SECONDS);
+        }, 20,5 * 60, TimeUnit.SECONDS);
 
     }
 

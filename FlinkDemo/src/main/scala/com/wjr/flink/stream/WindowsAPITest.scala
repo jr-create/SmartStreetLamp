@@ -31,7 +31,7 @@ object WindowsAPITest {
 
   // kafka数据源
   val properties = new Properties()
-  properties.put("bootstrap.servers", "42.192.65.44:9092")
+  properties.put("bootstrap.servers", "124.220.2.188:9092")
   properties.setProperty("group.id", "flink-window")
   val myConsumer = new FlinkKafkaConsumer[String]("flink", new SimpleStringSchema(), properties)
   val inputStream: DataStream[String] = env.addSource(myConsumer)

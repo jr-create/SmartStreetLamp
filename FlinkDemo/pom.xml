@@ -21,6 +21,12 @@
             <artifactId>flink-connector-kafka_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <!-- Table的json格式 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-json</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
         <!--      flink-clients中包含 flink-streaming依赖-->
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -70,7 +76,11 @@
             <artifactId>flink-connector-redis_2.11</artifactId>
             <version>1.0</version>
         </dependency>
-
+<!--        <dependency>-->
+<!--            <groupId>com.ververica</groupId>-->
+<!--            <artifactId>flink-connector-mysql-cdc</artifactId>-->
+<!--            <version>2.2.1</version>-->
+<!--        </dependency>-->
         <!-- htps:/mvnrepository.com/artifact/mysql/mysql-conector-java -->
         <dependency>
             <groupId>mysql</groupId>
@@ -87,6 +97,11 @@
             <groupId>org.json4s</groupId>
             <artifactId>json4s-jackson_2.12</artifactId>
             <version>3.6.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.66</version>
         </dependency>
     </dependencies>
 
