@@ -9,12 +9,12 @@
         <outputRelativeToContentRoot value="true" />
         <module name="spring_swagger" />
         <module name="DataStreaming" />
-        <module name="FlinkCDC" />
         <module name="DataSource" />
         <module name="FlinkDemo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="FlinkCDC" target="1.8" />
       <module name="mqtt1" target="1.8" />
       <module name="mqtt_web" target="1.8" />
       <module name="springboot_mqtt" target="1.8" />

@@ -5,10 +5,15 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.wjr.spring_swagger.utils.HttpUtils;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +25,7 @@ public class MessageHandleServiceImpl {
     /**
      * 通过 twilio 发送短信
      */
-    public String twilioSendSms(String mobile,String body){
+    public String  twilioSendSms(String mobile,String body){
         final String ACCOUNT_SID = "AC8149ab510d16d7a4e4f4119d54c79f28";
         final String AUTH_TOKEN = "ae341d6d76e1cc997a3a9c50f309eb60";
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -41,13 +46,13 @@ public class MessageHandleServiceImpl {
         String path = "/yzx/sendSms";
         String method = "POST";
         String appcode = "6501d20eee514ccdb643f5263d1e3c43";
-        Map<String, String> headers = new HashMap<String, String>();
+        Map<String, String> headers = new HashMap<>();
         //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
         headers.put("Authorization", "APPCODE " + appcode);
         //根据API的要求，定义相对应的Content-Type
         headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        Map<String, String> querys = new HashMap<String, String>();
-        Map<String, String> bodys = new HashMap<String, String>();
+        Map<String, String> querys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("mobile", mobile);
         bodys.put("param", "code:"+code);
         bodys.put("tpl_id", "TP1710262");
@@ -132,7 +137,7 @@ public class MessageHandleServiceImpl {
      * @param text html内容
      * @param rscPath 文件路径
      */
-/*    public void sendInlineResourceMail(String topic,String receiver,String text,String rscId,String rscPath){
+   public void sendInlineResourceMail(String topic,String receiver,String text,String rscId,String rscPath){
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -148,5 +153,5 @@ public class MessageHandleServiceImpl {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }

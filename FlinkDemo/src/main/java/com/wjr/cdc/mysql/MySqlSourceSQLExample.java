@@ -1,4 +1,4 @@
-package com.wjr.cdc;
+package com.wjr.cdc.mysql;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
@@ -12,8 +12,9 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
  * @Description:
  */
 public class MySqlSourceSQLExample {
-    public static void main(String[] args) throws Exception {
 
+
+    public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
@@ -41,6 +42,7 @@ public class MySqlSourceSQLExample {
         TableResult tableResult = tableEnv.executeSql("select * from flink_management");
         tableResult.print();
 
-        env.execute("Print MySQL Table SQL");
     }
 }
+
+

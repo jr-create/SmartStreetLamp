@@ -1,20 +1,10 @@
 package com.wjr.flink.stream
 
-import akka.serialization.NullSerializer
-import org.apache.flink.api.common.eventtime.{SerializableTimestampAssigner, WatermarkGenerator, WatermarkGeneratorSupplier, WatermarkStrategy}
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
-import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.common.typeutils.TypeSerializer
-import org.apache.flink.api.java.typeutils.runtime.ValueSerializer
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
-import org.apache.flink.streaming.api.functions.sink.TwoPhaseCommitSinkFunction.StateSerializer
 import org.apache.flink.streaming.api.scala.createTypeInformation
-import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
-import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.util.Collector
-
-import java.time.Duration
 
 /**
  * @Package: com.wjr.flink

@@ -1,7 +1,6 @@
 package com.wjr.spark.sql
 
 import com.wjr.spark.env.ProjectEnv
-import com.wjr.spark.streaming.DeciceHandleFormatStatistics.spark
 
 /**
  * @Package: com.wjr.spark.sql
@@ -16,7 +15,13 @@ object DataToHive {
         spark.sql(
             """
               |create EXTERNAL table  if not exists  lamp.dwd_device_index(
-              |reason string,device_id string,type_id int,`timestamp` int,error_code int,longitude string,latitude string,test array<string>,voltage string,temperature string,humidity string,lighting string,PM2_5 string,CO_2 string,info string,direct string,power string
+              |reason string,device_id string,type_id int,
+              |`timestamp` int,error_code int,
+              |longitude string,latitude string,
+              |test array<string>,voltage string,
+              |temperature string,humidity string,
+              |lighting string,PM2_5 string,CO_2 string,
+              |info string,direct string,power string
               |)PARTITIONED BY (`dt` string,road_id string)
               |STORED As parquet
               |LOCATION 'hdfs://hadoop01:8020/warehouse/smartStreetLamp/dwd/dwd_device_index'

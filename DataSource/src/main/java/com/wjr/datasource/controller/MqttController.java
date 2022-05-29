@@ -81,10 +81,10 @@ public class MqttController {
                     }
                 });
             }
-            return new ResponseEntity<>("OK", HttpStatus.OK);
+            return new ResponseEntity<>("数据模拟成功", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("ERROR", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("数据模拟失败", HttpStatus.NO_CONTENT);
         }
 
     }

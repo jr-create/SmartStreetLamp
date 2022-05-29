@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description:
  */
 @RestController
+@RequestMapping("/kafka")
 public class IndexController {
 
     //springboot提供的kafka支持
@@ -25,7 +26,7 @@ public class IndexController {
     KafkaTemplate kafkaTemplate;//将kafka注入到Controller中
 
     Logger logger = LoggerAction.logger;
-    @RequestMapping("/")
+    @RequestMapping("/send")
     public String index(@RequestBody String mqttLog) {
         System.out.println("请求："+mqttLog);
 

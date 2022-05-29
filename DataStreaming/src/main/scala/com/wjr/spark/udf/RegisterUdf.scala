@@ -1,6 +1,5 @@
 package com.wjr.spark.udf
 
-import com.wjr.spark.streaming.DeciceHandleFormatStatistics.spark
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods

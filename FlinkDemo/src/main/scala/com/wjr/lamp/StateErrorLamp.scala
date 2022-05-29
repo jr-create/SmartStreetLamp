@@ -35,7 +35,7 @@ object StateErrorLamp {
   env.getCheckpointConfig.setCheckpointTimeout(60000L)//checkpoint的超时时间为1分钟
   env.getCheckpointConfig.setMaxConcurrentCheckpoints(2)//checkpoint的并行度，默认为1
   env.getCheckpointConfig.setMinPauseBetweenCheckpoints(500L)//设置并行checkpoint之间的的最小时间
-  env.getCheckpointConfig.setTolerableCheckpointFailureNumber(12)//容忍多少checkpoint失败
+  // env.getCheckpointConfig.setTolerableCheckpointFailureNumber(12)//容忍多少checkpoint失败
 
   env.setRestartStrategy(RestartStrategies.fixedDelayRestart(2,4000L))
   // env.setRestartStrategy(RestartStrategies.failureRateRestart(3,Time.of(4,TimeUnit.MINUTES),Time.of(4,TimeUnit.SECONDS)))

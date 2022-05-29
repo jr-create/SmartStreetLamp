@@ -1,6 +1,5 @@
 import com.wjr.spark.env.ProjectEnv
 import com.wjr.spark.sink.{ClickhouseSink, MyKafkaSink}
-import com.wjr.spark.streaming.DeciceHandleFormatStatistics.spark
 import com.wjr.spark.utils.JsonUtils
 import org.apache.spark.sql.{DataFrame, SparkSession}
 

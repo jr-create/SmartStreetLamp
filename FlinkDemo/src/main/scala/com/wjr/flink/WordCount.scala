@@ -3,7 +3,7 @@ package com.wjr.flink
 import org.apache.flink.api.scala.{ExecutionEnvironment, createTypeInformation}
 
 object WordCount {
-    val path = "/usr/local/IdeaWorkSpace/sparkDemo/FlinkDemo/src/main/resources/wordCount.txt"
+    val path = "E:\\All_Project\\IDEA workspace\\SmartStreetLamp\\FlinkDemo\\src\\main\\resources\\wordCount.txt"
 
     def main(args: Array[String]): Unit = {
         val env = ExecutionEnvironment.getExecutionEnvironment

@@ -2,7 +2,6 @@ package com.wjr.spark.utils
 
 import com.wjr.spark.bean.{DeviceCountInfo, Sensor}
 import com.wjr.spark.env.ProjectEnv
-import com.wjr.spark.streaming.DeciceHandleFormatStatistics.spark
 import com.wjr.spark.utils.JsonUtils.getObjectValue
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
