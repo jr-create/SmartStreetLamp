@@ -1,13 +1,10 @@
 package com.wjr.cdc.stream;
 
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.types.Row;
 
-import static org.apache.flink.table.api.Expressions.$;
+import static org.apache.flink.table.api.Expressions.*;
 
 /**
  * @author 29375-wjr
@@ -20,8 +17,9 @@ public class StreamJoinMysql {
     public static void main(String[] args) throws Exception {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(5);
+        env.setParallelism(1);//cdc必须要并行度为1
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+
         tableEnv.executeSql("CREATE TABLE flink_management (\n" +
                 "  id int NOT NULL ,\n" +
                 "  name STRING ,\n" +
@@ -54,14 +52,18 @@ public class StreamJoinMysql {
                         "  'format' = 'raw')";
         tableEnv.executeSql(kafkaSourceSql);
         Table kafkaTable = tableEnv.from("kafkaTable");
-        Table mysql_management = tableEnv.from("mysql_management").select($("name"));
-        Table joinS = kafkaTable.join(mysql_management).where($("name").isEqual($("json")));
-        // joinS.execute().print();
-        DataStream<Row> rowDataStream = tableEnv.toChangelogStream(joinS);
-        DataStream<Tuple2<Boolean, Row>> tuple2DataStream = tableEnv.toRetractStream(joinS, Row.class);
+        Table mysql_management = tableEnv.from("flink_management");
+        Table KakfaJoinMysql = mysql_management.join(kafkaTable).where($("name").isEqual($("json")));
+        KakfaJoinMysql.execute().print();
+        // DataStream<Row> rowDataStream = tableEnv.toChangelogStream(KakfaJoinMysql);
+        // rowDataStream.print("Join Message");
+        // DataStream<Tuple2<Boolean, Row>> tuple2DataStream = tableEnv.toRetractStream(KakfaJoinMysql, Row.class);
         // tuple2DataStream.print("toRetractStream");
         // rowDataStream.executeAndCollect().forEachRemaining(System.out::println);
         // rowDataStream.print("toChangelogStream");
+
+
+
         env.execute("stream join Mysql" );
     }
 }
