@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.util.OutputTag;
 
 /**
  * @author 29375-wjr
@@ -14,9 +15,12 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
  * @create 2022-05-13 17:34
  * @Description:
  */
-public class ProjectEnv {
-    public static StreamExecutionEnvironment getEnv(){
-        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+public final class ProjectEnv {
+    private static StreamExecutionEnvironment env = null;
+    private static StreamTableEnvironment tableEnv = null;
+
+    public static  StreamExecutionEnvironment getEnv() {
+        env = StreamExecutionEnvironment.getExecutionEnvironment();
         //2.Flink-CDC 将读取 binlog 的位置信息以状态的方式保存在 CK,如果想要做到断点续传,需要从 Checkpoint 或者 Savepoint 启动程序
         //2.1 开启 Checkpoint,每隔 5 秒钟做一次 CK
         env.enableCheckpointing(5000L);
@@ -37,10 +41,11 @@ public class ProjectEnv {
         System.setProperty("HADOOP_USER_NAME", "atguigu");
         return env;
     }
-    public static StreamTableEnvironment getTableEnv(){
-        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(getEnv());
+
+    // 全局TableEnv
+    public static StreamTableEnvironment getTableEnv() {
+        tableEnv = StreamTableEnvironment.create(getEnv());
         return tableEnv;
     }
-
 
 }
